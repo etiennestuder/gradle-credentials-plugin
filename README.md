@@ -1,4 +1,4 @@
 gradle-credentials-plugin
 =========================
 
-Gradle plugin to store and access credentials in an encrypted manner.
+Gradle plugin to store and access encrypted credentials for use in Gradle builds. — Edit
