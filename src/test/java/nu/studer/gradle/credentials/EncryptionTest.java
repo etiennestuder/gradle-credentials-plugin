@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class EncryptionTest {
 
     @Test
-    public void encryptDecrypt() throws Exception {
+    public void encryptDecrypt() {
         char[] passPhrase = "My very secret pass phrase".toCharArray();
         String textToEncrypt = "Some text that needs to be encrypted.";
 

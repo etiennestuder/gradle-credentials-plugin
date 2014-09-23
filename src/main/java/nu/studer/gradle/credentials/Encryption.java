@@ -66,9 +66,17 @@ public final class Encryption {
      *
      * @param passPhrase the password to apply when creating the secret key
      * @return the new Encryption instance
-     * @throws GeneralSecurityException thrown in case of errors
+     * @throws RuntimeException with wrapped GeneralSecurityException in case of crypto-related exceptions
      */
-    public static Encryption createEncryption(char[] passPhrase) throws GeneralSecurityException {
+    public static Encryption createEncryption(char[] passPhrase) {
+        try {
+            return createEncryptionThrowingException(passPhrase);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException("Cannot create Encryption instance: " + e.getMessage(), e);
+        }
+    }
+
+    private static Encryption createEncryptionThrowingException(char[] passPhrase) throws GeneralSecurityException {
         // define salt to prevent dictionary attacks (ideally, the salt would be regenerated each time and stored alongside the encrypted text)
         byte[] salt = {
                 (byte) 0x1F, (byte) 0x13, (byte) 0xE5, (byte) 0xB2,

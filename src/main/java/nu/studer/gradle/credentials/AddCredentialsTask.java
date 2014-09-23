@@ -63,10 +63,14 @@ public class AddCredentialsTask extends DefaultTask {
             LOGGER.debug("Credentials file does not exist yet: " + file.getAbsolutePath());
         }
 
-        // update with the specified credentials
-        properties.setProperty(key, value);
+        // encrypt value
+        Encryption encryption = Encryption.createEncryption("Default pass phrase".toCharArray());
+        String encryptedValue = encryption.encrypt(value);
 
-        // write the update credentials
+        // update credentials
+        properties.setProperty(key, encryptedValue);
+
+        // write the updated credentials
         LOGGER.debug("Write updated credentials file: " + file.getAbsolutePath());
         GUtil.saveProperties(properties, file);
     }
