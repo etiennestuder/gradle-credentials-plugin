@@ -16,13 +16,13 @@ import java.util.Properties;
 /**
  * Adds/updates the given credentials, specified as project properties.
  */
-public class AddCredentials extends DefaultTask {
+public class AddCredentialsTask extends DefaultTask {
 
     public static final String CREDENTIALS_KEY_PROPERTY = "credentialsKey";
     public static final String CREDENTIALS_VALUE_PROPERTY = "credentialsValue";
     public static final String ENCRYPTED_PROPERTIES_FILE = "gradle.encrypted.properties";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentials.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentialsTask.class);
 
     @Input
     public String getCredentialsKey() {

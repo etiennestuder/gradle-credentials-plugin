@@ -19,7 +19,7 @@ public class CredentialsPlugin implements Plugin<Project> {
     @Override
     public void apply(Project project) {
         // add a task instance that stores the given credentials in the credentials properties file, encrypted
-        DefaultTask setCredential = project.getTasks().create(ADD_CREDENTIALS_TASK_NAME, AddCredentials.class);
+        DefaultTask setCredential = project.getTasks().create(ADD_CREDENTIALS_TASK_NAME, AddCredentialsTask.class);
         setCredential.setDescription("Adds the credentials specified through the project properties 'credentialsKey' and 'credentialsValue'.");
         setCredential.setGroup("Credentials");
         LOGGER.debug(String.format("Registered task '%s'", setCredential.getName()));
