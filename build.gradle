@@ -12,6 +12,10 @@ apply plugin: 'nu.studer.plugindev'
 group = 'nu.studer'
 version = '0.0.1'
 
+dependencies {
+    testCompile "junit:junit:$junitVersion"
+}
+
 plugindev {
     pluginDescription 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
     pluginImplementationClass 'nu.studer.gradle.credentials.CredentialsPlugin'
