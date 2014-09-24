@@ -23,10 +23,10 @@ public class AddCredentialsTask extends DefaultTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentialsTask.class);
 
-    private CredentialsManager credentialsManager;
+    private CredentialsPersistenceManager credentialsPersistenceManager;
 
-    public void setCredentialsManager(CredentialsManager credentialsManager) {
-        this.credentialsManager = credentialsManager;
+    public void setCredentialsPersistenceManager(CredentialsPersistenceManager credentialsPersistenceManager) {
+        this.credentialsPersistenceManager = credentialsPersistenceManager;
     }
 
     @Input
@@ -41,7 +41,7 @@ public class AddCredentialsTask extends DefaultTask {
 
     @OutputFile
     public File getEncryptedPropertiesFile() {
-        return this.credentialsManager.getCredentialsFile();
+        return this.credentialsPersistenceManager.getCredentialsFile();
     }
 
     @TaskAction
@@ -55,7 +55,7 @@ public class AddCredentialsTask extends DefaultTask {
         LOGGER.debug(String.format("Add credentials with key: '%s', value: '%s'", key, new String(placeholderValue)));
 
         // read the current persisted credentials
-        Properties credentials = this.credentialsManager.readCredentials();
+        Properties credentials = this.credentialsPersistenceManager.readCredentials();
 
         // encrypt value
         Encryption encryption = Encryption.createEncryption("Default pass phrase".toCharArray());
@@ -65,7 +65,7 @@ public class AddCredentialsTask extends DefaultTask {
         credentials.setProperty(key, encryptedValue);
 
         // persist the updated credentials
-        this.credentialsManager.storeCredentials(credentials);
+        this.credentialsPersistenceManager.storeCredentials(credentials);
     }
 
     private String getProjectProperty(String key) {

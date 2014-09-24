@@ -8,15 +8,15 @@ import java.io.File;
 import java.util.Properties;
 
 /**
- * Manages the storage and retrieval up encrypted credentials.
+ * Manages the storage and retrieval of encrypted credentials.
  */
-public final class CredentialsManager {
+public final class CredentialsPersistenceManager {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CredentialsManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CredentialsPersistenceManager.class);
 
     private final File credentialsFile;
 
-    public CredentialsManager(File credentialsFile) {
+    public CredentialsPersistenceManager(File credentialsFile) {
         this.credentialsFile = credentialsFile;
     }
 
