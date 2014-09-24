@@ -1,7 +1,6 @@
 package nu.studer.gradle.credentials;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.BASE64DecoderStream;
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.BASE64EncoderStream;
+import nu.studer.gradle.util.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -37,8 +36,7 @@ public final class Encryption {
         try {
             byte[] utf8 = string.getBytes(UTF_8_CHARSET);
             byte[] enc = ecipher.doFinal(utf8);
-            enc = BASE64EncoderStream.encode(enc);
-            return new String(enc, UTF_8_CHARSET);
+            return Base64.encodeBase64(enc);
         } catch (Exception e) {
             throw new RuntimeException("Encryption failed: " + e.getMessage(), e);
         }
@@ -52,8 +50,7 @@ public final class Encryption {
      */
     public String decrypt(String string) {
         try {
-            byte[] dec = string.getBytes(UTF_8_CHARSET);
-            dec = BASE64DecoderStream.decode(dec);
+            byte[] dec = Base64.decodeBase64(string);
             byte[] utf8 = dcipher.doFinal(dec);
             return new String(utf8, UTF_8_CHARSET);
         } catch (Exception e) {
@@ -82,6 +79,8 @@ public final class Encryption {
                 (byte) 0x1F, (byte) 0x13, (byte) 0xE5, (byte) 0xB2,
                 (byte) 0x49, (byte) 0x2C, (byte) 0xC3, (byte) 0x3C
         };
+
+        // todo (etst) use different salt each time
 
         // use high iteration count to slow down decryption speed
         int iterationCount = 65536;
