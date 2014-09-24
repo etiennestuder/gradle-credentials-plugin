@@ -89,8 +89,8 @@ public final class Encryption {
         // provide password, salt, iteration count for generating PBEKey of fixed-key-size PBE ciphers
         PBEKeySpec pbeKeySpec = new PBEKeySpec(passPhrase, salt, iterationCount);
 
-        // create a secret (symmetric) key using PBE with MD5 and DES
-        SecretKeyFactory keyFac = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
+        // create a secret (symmetric) key using PBE with MD5 and Triple DES
+        SecretKeyFactory keyFac = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
         SecretKey pbeKey = keyFac.generateSecret(pbeKeySpec);
 
         // construct a parameter set for password-based encryption as defined in the PKCS #5 standard
