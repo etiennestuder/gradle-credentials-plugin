@@ -5,7 +5,6 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.util.GUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +20,14 @@ public class AddCredentialsTask extends DefaultTask {
 
     public static final String CREDENTIALS_KEY_PROPERTY = "credentialsKey";
     public static final String CREDENTIALS_VALUE_PROPERTY = "credentialsValue";
-    public static final String ENCRYPTED_PROPERTIES_FILE = "gradle.encrypted.properties";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentialsTask.class);
+
+    private CredentialsManager credentialsManager;
+
+    public void setCredentialsManager(CredentialsManager credentialsManager) {
+        this.credentialsManager = credentialsManager;
+    }
 
     @Input
     public String getCredentialsKey() {
@@ -37,8 +41,7 @@ public class AddCredentialsTask extends DefaultTask {
 
     @OutputFile
     public File getEncryptedPropertiesFile() {
-        File gradleUserHomeDir = getProject().getGradle().getGradleUserHomeDir();
-        return new File(gradleUserHomeDir, ENCRYPTED_PROPERTIES_FILE);
+        return this.credentialsManager.getCredentialsFile();
     }
 
     @TaskAction
@@ -51,29 +54,18 @@ public class AddCredentialsTask extends DefaultTask {
         Arrays.fill(placeholderValue, '*');
         LOGGER.debug(String.format("Add credentials with key: '%s', value: '%s'", key, new String(placeholderValue)));
 
-        // manage read/write/update of credentials through the Java Properties mechanism
-        Properties properties = new Properties();
-
-        // read the file with the encrypted credentials, if it already exists
-        File file = getEncryptedPropertiesFile();
-        if (file.exists()) {
-            LOGGER.debug("Read existing credentials file: " + file.getAbsolutePath());
-            Properties existingProperties = GUtil.loadProperties(file);
-            properties.putAll(existingProperties);
-        } else {
-            LOGGER.debug("Credentials file does not exist yet: " + file.getAbsolutePath());
-        }
+        // read the current persisted credentials
+        Properties credentials = this.credentialsManager.readCredentials();
 
         // encrypt value
         Encryption encryption = Encryption.createEncryption("Default pass phrase".toCharArray());
         String encryptedValue = encryption.encrypt(value);
 
         // update credentials
-        properties.setProperty(key, encryptedValue);
+        credentials.setProperty(key, encryptedValue);
 
-        // write the updated credentials
-        LOGGER.debug("Write updated credentials file: " + file.getAbsolutePath());
-        GUtil.saveProperties(properties, file);
+        // persist the updated credentials
+        this.credentialsManager.storeCredentials(credentials);
     }
 
     private String getProjectProperty(String key) {
