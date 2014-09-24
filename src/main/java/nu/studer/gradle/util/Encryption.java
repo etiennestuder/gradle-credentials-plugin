@@ -1,6 +1,4 @@
-package nu.studer.gradle.credentials;
-
-import nu.studer.gradle.util.Base64;
+package nu.studer.gradle.util;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;

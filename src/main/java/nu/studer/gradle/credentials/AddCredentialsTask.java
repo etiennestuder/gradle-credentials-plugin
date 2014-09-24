@@ -1,5 +1,6 @@
 package nu.studer.gradle.credentials;
 
+import nu.studer.gradle.util.Encryption;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
