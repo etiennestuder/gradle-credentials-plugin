@@ -13,7 +13,15 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * Plugin to store and access encrypted credentials.
+ * Plugin to store and access encrypted credentials using password-based encryption (PBE). The credentials are stored in the Gradle home directory in a separate file for each
+ * passphrase. If no passphrase is provided, a default passphrase is used and the credentials are stored in the default credentials file 'gradle.encrypted.properties'. While
+ * running a build, only one passphrase is active per project.
+ * <p/>
+ * The plugin provides a credentials container through the 'credentials' property that is available from the Gradle project. This allows access to credentials in the form of
+ * <code>project.myCredentialKey</code>. The already persisted credentials can be accessed through the credentials container, and new credentials can be added to the container
+ * ad-hoc while the build is executed. Credentials added ad-hoc are not available beyond the lifetime of the build.
+ * <p/>
+ * The plugin adds a task to add credentials and a task to remove credentials.
  */
 public class CredentialsPlugin implements Plugin<Project> {
 
@@ -59,6 +67,13 @@ public class CredentialsPlugin implements Plugin<Project> {
         addCredentials.setCredentialsEncryptor(credentialsEncryptor);
         addCredentials.setCredentialsPersistenceManager(credentialsPersistenceManager);
         LOGGER.debug(String.format("Registered task '%s'", addCredentials.getName()));
+
+        // add a task instance that removes some credentials through the credentials persistence manager
+        RemoveCredentialsTask removeCredentials = project.getTasks().create(REMOVE_CREDENTIALS_TASK_NAME, RemoveCredentialsTask.class);
+        removeCredentials.setDescription("Removes the credentials specified through the project property 'credentialsKey'.");
+        removeCredentials.setGroup("Credentials");
+        removeCredentials.setCredentialsPersistenceManager(credentialsPersistenceManager);
+        LOGGER.debug(String.format("Registered task '%s'", removeCredentials.getName()));
     }
 
     private String deriveFileNameFromPassphrase(String passphrase) {
