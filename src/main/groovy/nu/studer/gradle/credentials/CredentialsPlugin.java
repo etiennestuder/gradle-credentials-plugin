@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Plugin to store and access encrypted credentials.
@@ -32,8 +33,11 @@ public class CredentialsPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        // derive the name of the credentials file from the (optionally) given passphrase
-        String credentialsFileName = deriveFileNameFromPassphrase(project);
+        // get the passphrase from the project properties, otherwise use the default passphrase
+        String passphrase = getProjectProperty(CREDENTIALS_PASSPHRASE_PROPERTY, DEFAULT_PASSPHRASE, project);
+
+        // derive the name of the credentials file from the passphrase
+        String credentialsFileName = deriveFileNameFromPassphrase(passphrase);
 
         // create credentials encryptor for the given passphrase
         CredentialsEncryptor credentialsEncryptor = CredentialsEncryptor.withPassphrase(CredentialsPlugin.DEFAULT_PASSPHRASE.toCharArray());
@@ -57,13 +61,10 @@ public class CredentialsPlugin implements Plugin<Project> {
         LOGGER.debug(String.format("Registered task '%s'", addCredentials.getName()));
     }
 
-    private String deriveFileNameFromPassphrase(Project project) {
-        // get the optionally specified passphrase from the project properties
-        String passphrase = getProjectProperty(CREDENTIALS_PASSPHRASE_PROPERTY, project);
-
+    private String deriveFileNameFromPassphrase(String passphrase) {
         // derive the name of the file that contains the credentials from the given passphrase
         String credentialsFileName;
-        if (passphrase == null) {
+        if (passphrase.equals(DEFAULT_PASSPHRASE)) {
             credentialsFileName = DEFAULT_PASSPHRASE_CREDENTIALS_FILE;
             LOGGER.debug("No explicit passphrase provided. Using default credentials file name: " + credentialsFileName);
         } else {
@@ -73,8 +74,9 @@ public class CredentialsPlugin implements Plugin<Project> {
         return credentialsFileName;
     }
 
-    private String getProjectProperty(String key, Project project) {
-        return (String) project.getProperties().get(key);
+    private String getProjectProperty(String key, String defaultValue, Project project) {
+        Map<String, ?> properties = project.getProperties();
+        return properties.containsKey(key) ? (String) properties.get(key) : defaultValue;
     }
 
 }
