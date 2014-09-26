@@ -20,7 +20,17 @@ public final class CredentialsEncryptor {
      * @return the encrypted string
      */
     public String encrypt(String string) {
-        return this.encryption.encrypt(string);
+        return string != null ? encryption.encrypt(string) : null;
+    }
+
+    /**
+     * Decrypts the given string.
+     *
+     * @param string the string to decrypt
+     * @return the decrypted string
+     */
+    public String decrypt(String string) {
+        return string != null ? encryption.decrypt(string) : null;
     }
 
     /**

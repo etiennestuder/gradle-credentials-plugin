@@ -44,7 +44,7 @@ public class AddCredentialsTask extends DefaultTask {
 
     @OutputFile
     public File getEncryptedPropertiesFile() {
-        return this.credentialsPersistenceManager.getCredentialsFile();
+        return credentialsPersistenceManager.getCredentialsFile();
     }
 
     @TaskAction
@@ -58,14 +58,14 @@ public class AddCredentialsTask extends DefaultTask {
         LOGGER.debug(String.format("Add credentials with key: '%s', value: '%s'", key, new String(placeholderValue)));
 
         // read the current persisted credentials
-        Properties credentials = this.credentialsPersistenceManager.readCredentials();
+        Properties credentials = credentialsPersistenceManager.readCredentials();
 
         // encrypt value and update credentials
-        String encryptedValue = this.credentialsEncryptor.encrypt(value);
+        String encryptedValue = credentialsEncryptor.encrypt(value);
         credentials.setProperty(key, encryptedValue);
 
         // persist the updated credentials
-        this.credentialsPersistenceManager.storeCredentials(credentials);
+        credentialsPersistenceManager.storeCredentials(credentials);
     }
 
     private String getProjectProperty(String key) {

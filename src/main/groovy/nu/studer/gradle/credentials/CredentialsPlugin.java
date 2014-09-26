@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Properties;
 
 /**
  * Plugin to store and access encrypted credentials.
@@ -45,8 +44,7 @@ public class CredentialsPlugin implements Plugin<Project> {
         CredentialsPersistenceManager credentialsPersistenceManager = new CredentialsPersistenceManager(credentialsFile);
 
         // add a new 'credentials' property and transiently store the persisted credentials for access in build scripts
-        Properties persistedCredentials = credentialsPersistenceManager.readCredentials();
-        CredentialsContainer credentialsContainer = new CredentialsContainer(persistedCredentials);
+        CredentialsContainer credentialsContainer = new CredentialsContainer(credentialsEncryptor, credentialsPersistenceManager.readCredentials());
         project.getExtensions().getExtraProperties().set(CREDENTIALS_CONTAINER_PROPERTY, credentialsContainer);
         LOGGER.debug("Registered property '" + CREDENTIALS_CONTAINER_PROPERTY + "'");
 
