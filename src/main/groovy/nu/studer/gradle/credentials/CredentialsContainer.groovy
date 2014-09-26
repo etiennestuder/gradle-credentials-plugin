@@ -17,7 +17,7 @@ final class CredentialsContainer {
 
   def propertyMissing(String name) {
     if (this.credentials.containsKey(name)) {
-      Encryption encryption = Encryption.createEncryption("Default pass phrase".toCharArray())
+      Encryption encryption = Encryption.createEncryption(CredentialsPlugin.DEFAULT_PASSPHRASE.toCharArray())
       encryption.decrypt(this.credentials[name] as String)
     } else {
       null
@@ -25,7 +25,7 @@ final class CredentialsContainer {
   }
 
   def propertyMissing(String name, value) {
-    def encryption = Encryption.createEncryption("Default pass phrase".toCharArray())
+    def encryption = Encryption.createEncryption(CredentialsPlugin.DEFAULT_PASSPHRASE.toCharArray())
     this.credentials[name] = value ? encryption.encrypt(value as String) : null
   }
 
