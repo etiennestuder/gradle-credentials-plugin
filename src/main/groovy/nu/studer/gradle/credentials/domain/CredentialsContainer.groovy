@@ -1,5 +1,6 @@
-package nu.studer.gradle.credentials
+package nu.studer.gradle.credentials.domain
 
+import nu.studer.gradle.credentials.CredentialsPlugin
 import nu.studer.gradle.util.Encryption
 
 /**

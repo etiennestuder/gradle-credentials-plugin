@@ -1,4 +1,4 @@
-package nu.studer.gradle.credentials
+package nu.studer.gradle.credentials.domain
 
 @SuppressWarnings("GrUnresolvedAccess")
 class CredentialsContainerTest extends GroovyTestCase {

@@ -1,4 +1,4 @@
-package nu.studer.gradle.credentials;
+package nu.studer.gradle.credentials.domain;
 
 import org.gradle.util.GUtil;
 import org.slf4j.Logger;
