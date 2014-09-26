@@ -1,6 +1,5 @@
 package nu.studer.gradle.credentials;
 
-import nu.studer.gradle.util.Encryption;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
@@ -20,7 +19,12 @@ public class AddCredentialsTask extends DefaultTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentialsTask.class);
 
+    private CredentialsEncryptor credentialsEncryptor;
     private CredentialsPersistenceManager credentialsPersistenceManager;
+
+    public void setCredentialsEncryptor(CredentialsEncryptor credentialsEncryptor) {
+        this.credentialsEncryptor = credentialsEncryptor;
+    }
 
     public void setCredentialsPersistenceManager(CredentialsPersistenceManager credentialsPersistenceManager) {
         this.credentialsPersistenceManager = credentialsPersistenceManager;
@@ -54,11 +58,8 @@ public class AddCredentialsTask extends DefaultTask {
         // read the current persisted credentials
         Properties credentials = this.credentialsPersistenceManager.readCredentials();
 
-        // encrypt value
-        Encryption encryption = Encryption.createEncryption(CredentialsPlugin.DEFAULT_PASSPHRASE.toCharArray());
-        String encryptedValue = encryption.encrypt(value);
-
-        // update credentials
+        // encrypt value and update credentials
+        String encryptedValue = this.credentialsEncryptor.encrypt(value);
         credentials.setProperty(key, encryptedValue);
 
         // persist the updated credentials

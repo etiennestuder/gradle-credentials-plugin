@@ -33,6 +33,9 @@ public class CredentialsPlugin implements Plugin<Project> {
         // derive the name of the credentials file from the (optionally) given passphrase
         String credentialsFileName = deriveFileNameFromPassphrase(project);
 
+        // create credentials encryptor for the given passphrase
+        CredentialsEncryptor credentialsEncryptor = CredentialsEncryptor.withPassphrase(CredentialsPlugin.DEFAULT_PASSPHRASE.toCharArray());
+
         // create a credentials persistence manager that operates on the credentials file
         File gradleUserHomeDir = project.getGradle().getGradleUserHomeDir();
         File credentialsFile = new File(gradleUserHomeDir, credentialsFileName);
@@ -48,6 +51,7 @@ public class CredentialsPlugin implements Plugin<Project> {
         AddCredentialsTask addCredentials = project.getTasks().create(ADD_CREDENTIALS_TASK_NAME, AddCredentialsTask.class);
         addCredentials.setDescription("Adds the credentials specified through the project properties 'credentialsKey' and 'credentialsValue'.");
         addCredentials.setGroup("Credentials");
+        addCredentials.setCredentialsEncryptor(credentialsEncryptor);
         addCredentials.setCredentialsPersistenceManager(credentialsPersistenceManager);
         LOGGER.debug(String.format("Registered task '%s'", addCredentials.getName()));
     }
