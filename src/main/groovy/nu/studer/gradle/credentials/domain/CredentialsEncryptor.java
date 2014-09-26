@@ -1,7 +1,5 @@
 package nu.studer.gradle.credentials.domain;
 
-import nu.studer.gradle.util.Encryption;
-
 /**
  * Encrypts/decrypts credentials through password-based encryption.
  *

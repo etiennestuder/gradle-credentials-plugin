@@ -1,4 +1,4 @@
-package nu.studer.gradle.util;
+package nu.studer.gradle.credentials.domain;
 
 import org.junit.Test;
 
