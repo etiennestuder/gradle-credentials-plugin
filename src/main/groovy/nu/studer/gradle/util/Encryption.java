@@ -59,19 +59,19 @@ public final class Encryption {
     /**
      * Creates a new Encryption instance that uses password-based encryption (PBE). The algorithm used to create the secret key is <i>PBEWithMD5AndDES</i>.
      *
-     * @param passPhrase the password to apply when creating the secret key
+     * @param passphrase the passphrase to apply when creating the secret key
      * @return the new Encryption instance
      * @throws RuntimeException with wrapped GeneralSecurityException in case of crypto-related exceptions
      */
-    public static Encryption createEncryption(char[] passPhrase) {
+    public static Encryption createEncryption(char[] passphrase) {
         try {
-            return createEncryptionThrowingException(passPhrase);
+            return createEncryptionThrowingException(passphrase);
         } catch (GeneralSecurityException e) {
             throw new RuntimeException("Cannot create Encryption instance: " + e.getMessage(), e);
         }
     }
 
-    private static Encryption createEncryptionThrowingException(char[] passPhrase) throws GeneralSecurityException {
+    private static Encryption createEncryptionThrowingException(char[] passphrase) throws GeneralSecurityException {
         // define salt to prevent dictionary attacks (ideally, the salt would be regenerated each time and stored alongside the encrypted text)
         byte[] salt = {
                 (byte) 0x1F, (byte) 0x13, (byte) 0xE5, (byte) 0xB2,
@@ -84,7 +84,7 @@ public final class Encryption {
         int iterationCount = 65536;
 
         // provide password, salt, iteration count for generating PBEKey of fixed-key-size PBE ciphers
-        PBEKeySpec pbeKeySpec = new PBEKeySpec(passPhrase, salt, iterationCount);
+        PBEKeySpec pbeKeySpec = new PBEKeySpec(passphrase, salt, iterationCount);
 
         // create a secret (symmetric) key using PBE with MD5 and Triple DES
         SecretKeyFactory keyFac = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
