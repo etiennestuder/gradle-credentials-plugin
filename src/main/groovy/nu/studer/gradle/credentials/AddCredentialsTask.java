@@ -18,9 +18,6 @@ import java.util.Properties;
  */
 public class AddCredentialsTask extends DefaultTask {
 
-    public static final String CREDENTIALS_KEY_PROPERTY = "credentialsKey";
-    public static final String CREDENTIALS_VALUE_PROPERTY = "credentialsValue";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentialsTask.class);
 
     private CredentialsPersistenceManager credentialsPersistenceManager;
@@ -31,12 +28,12 @@ public class AddCredentialsTask extends DefaultTask {
 
     @Input
     public String getCredentialsKey() {
-        return getProjectProperty(CREDENTIALS_KEY_PROPERTY);
+        return getProjectProperty(CredentialsPlugin.CREDENTIALS_KEY_PROPERTY);
     }
 
     @Input
     public String getCredentialsValue() {
-        return getProjectProperty(CREDENTIALS_VALUE_PROPERTY);
+        return getProjectProperty(CredentialsPlugin.CREDENTIALS_VALUE_PROPERTY);
     }
 
     @OutputFile
@@ -58,7 +55,7 @@ public class AddCredentialsTask extends DefaultTask {
         Properties credentials = this.credentialsPersistenceManager.readCredentials();
 
         // encrypt value
-        Encryption encryption = Encryption.createEncryption("Default pass phrase".toCharArray());
+        Encryption encryption = Encryption.createEncryption(CredentialsPlugin.DEFAULT_PASSPHRASE.toCharArray());
         String encryptedValue = encryption.encrypt(value);
 
         // update credentials
