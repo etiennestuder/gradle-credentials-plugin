@@ -76,7 +76,6 @@ plugins {
 Please refer to the [Gradle DSL PluginDependenciesSpec](http://www.gradle.org/docs/current/dsl/org.gradle.plugin.use.PluginDependenciesSpec.html) to 
 understand the behavior and limitations when using the new syntax to declare plugin dependencies.
 
-
 ## Access credentials from within a build
 
 Get the desired credentials from the `credentials` container, available on the project instance. The 
