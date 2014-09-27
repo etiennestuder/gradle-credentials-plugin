@@ -48,7 +48,53 @@ a convenient way to avoid having to store credentials in plain text.
 
 ## Apply credentials plugin
 
-TODO
+Apply the `nu.studer.credentials` plugin to your Gradle plugin project.
+
+### Gradle 1.x and 2.0
+
+```groovy
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'nu.studer:gradle-credentials-plugin:1.0.0'
+    }
+}
+
+apply plugin: 'nu.studer.credentials'
+```
+
+### Gradle 2.1 and higher
+
+```groovy
+plugins {
+  id 'nu.studer.credentials' version '1.0.0'
+}
+```
+
+Please refer to the [Gradle DSL PluginDependenciesSpec](http://www.gradle.org/docs/current/dsl/org.gradle.plugin.use.PluginDependenciesSpec.html) to 
+understand the behavior and limitations when using the new syntax to declare plugin dependencies.
+
+
+## Access credentials from within a build
+
+Get the desired credentials from the `credentials` container, available on the project instance. The 
+credentials are decrypted as they are accessed.
+
+```groovy
+String accountPassword = credentials.someAccountName
+```
+
+## Add credentials ad-hoc from within a build
+
+Set the desired credentials on the `credentials` container, available on the project instance. The 
+credentials are encrypted as they are assigned.
+
+```groovy
+String accountPassword = 'verySecret'
+credentials.someAccountName = accountPassword
+``` 
 
 # Feedback and Contributions
 
