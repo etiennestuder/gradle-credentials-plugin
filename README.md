@@ -76,7 +76,9 @@ plugins {
 Please refer to the [Gradle DSL PluginDependenciesSpec](http://www.gradle.org/docs/current/dsl/org.gradle.plugin.use.PluginDependenciesSpec.html) to 
 understand the behavior and limitations when using the new syntax to declare plugin dependencies.
 
-## Store encrypted credentials
+## Invoke credentials tasks
+
+### Store encrypted credentials
  
 You can store new credentials or update existing credentials through the `addCredentials` task. Pass along
 the credentials key and value through the `credentialsKey` and `credentialsValue` project properties. The 
@@ -90,7 +92,7 @@ _MD5HASH_ is calculated from the specified passphrase.
 
     gradle addCredentials -PcredentialsKey=someKey -PcredentialsValue=someValue -PcredentialsPassphrase=mySecretPassPhrase
 
-## Remove encrypted credentials
+### Remove encrypted credentials
 
 You can remove existing credentials through the `removeCredentials` task. Pass along
 the credentials key project property. The credentials are removed from the 
@@ -104,7 +106,9 @@ _MD5HASH_ is calculated from the specified passphrase.
 
     gradle removeCredentials -PcredentialsKey=someKey -PcredentialsPassphrase=mySecretPassPhrase
 
-## Access credentials from within a build
+## Access credentials in build
+
+### Get credentials from within a build
 
 Get the desired credentials from the `credentials` container, available on the project instance. The 
 credentials are decrypted as they are accessed.
@@ -113,15 +117,24 @@ credentials are decrypted as they are accessed.
 String accountPassword = credentials.someAccountName
 ```
 
-## Add credentials ad-hoc from within a build
+If no explicit passphrase is passed when starting the build, the `credentials` container is initialized 
+with all credentials persisted in the _GRADLE_USER_HOME/gradle.encrypted.properties_.
+ 
+If a custom passphrase is passed through the `credentialsPassphrase` project property when starting the build,
+the `credentials` container is initialized with all credentials persisted in the passphrase-specific 
+_GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the _MD5HASH_ is calculated from the 
+specified passphrase.
+
+### Add credentials ad-hoc from within a build
 
 Set the desired credentials on the `credentials` container, available on the project instance. The 
 credentials are encrypted as they are assigned.
 
 ```groovy
-String accountPassword = 'verySecret'
-credentials.someAccountName = accountPassword
-``` 
+credentials.someAccountName = 'verySecret'
+```
+
+Credentials added ad-hoc during the build are not persisted on the file system.
 
 # Feedback and Contributions
 
