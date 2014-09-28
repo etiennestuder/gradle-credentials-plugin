@@ -76,6 +76,34 @@ plugins {
 Please refer to the [Gradle DSL PluginDependenciesSpec](http://www.gradle.org/docs/current/dsl/org.gradle.plugin.use.PluginDependenciesSpec.html) to 
 understand the behavior and limitations when using the new syntax to declare plugin dependencies.
 
+## Store encrypted credentials
+ 
+You can store new credentials or update existing credentials through the `addCredentials` task. Pass along
+the credentials key and value through the `credentialsKey` and `credentialsValue` project properties. The 
+credentials are stored in the _GRADLE_USER_HOME/gradle.encrypted.properties_.
+
+    gradle addCredentials -PcredentialsKey=someKey -PcredentialsValue=someValue
+    
+Optionally, pass along a custom passphrase through the `credentialsPassphrase` project property. The 
+credentials are stored in the passphrase-specific _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the 
+_MD5HASH_ is calculated from the specified passphrase.
+
+    gradle addCredentials -PcredentialsKey=someKey -PcredentialsValue=someValue -PcredentialsPassphrase=mySecretPassPhrase
+
+## Remove encrypted credentials
+
+You can remove existing credentials through the `removeCredentials` task. Pass along
+the credentials key project property. The credentials are removed from the 
+_GRADLE_USER_HOME/gradle.encrypted.properties_.
+
+    gradle removeCredentials -PcredentialsKey=someKey
+    
+Optionally, pass along a custom passphrase through the `credentialsPassphrase` project property. The 
+credentials are removed from the passphrase-specific _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the 
+_MD5HASH_ is calculated from the specified passphrase.
+
+    gradle removeCredentials -PcredentialsKey=someKey -PcredentialsPassphrase=mySecretPassPhrase
+
 ## Access credentials from within a build
 
 Get the desired credentials from the `credentials` container, available on the project instance. The 
