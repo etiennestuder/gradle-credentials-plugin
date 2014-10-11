@@ -5,14 +5,21 @@ import nu.studer.gradle.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
+import java.security.spec.KeySpec;
 
 /**
  * Encryption/decryption of text using ciphers.
  * <p/>
- * Note: The author of this class is by far not a security expert. The chosen implementation has been primarily gathered from examples in the javax.crypto Javadoc.
+ * Note: The author of this class is by far not a security expert. The chosen implementation has been primarily gathered from examples in the javax.crypto Javadoc and from
+ * discussions on StackOverflow.
+ * <p/>
+ * See also <a href="http://stackoverflow.com/questions/992019/java-256-bit-aes-password-based-encryption">here</a> for a more detailed explanation on the selected security
+ * algorithms.
  */
 public final class Encryption {
 
@@ -74,33 +81,38 @@ public final class Encryption {
     }
 
     private static Encryption createEncryptionThrowingException(char[] passphrase) throws GeneralSecurityException {
-        // define salt to prevent dictionary attacks (ideally, the salt would be regenerated each time and stored alongside the encrypted text)
+        // define a salt to prevent dictionary attacks (ideally, the salt would be
+        // regenerated each time and stored alongside the encrypted text)
         byte[] salt = {
                 (byte) 0x1F, (byte) 0x13, (byte) 0xE5, (byte) 0xB2,
                 (byte) 0x49, (byte) 0x2C, (byte) 0xC3, (byte) 0x3C
         };
 
-        // todo (etst) use different salt each time
-
-        // use high iteration count to slow down decryption speed
+        // use a high iteration count to slow down the decryption speed
         int iterationCount = 65536;
 
-        // provide password, salt, iteration count for generating PBEKey of fixed-key-size PBE ciphers
-        PBEKeySpec pbeKeySpec = new PBEKeySpec(passphrase, salt, iterationCount);
+        // use the maximum key length that does not require to install the JRE Security Extension
+        int keyLength = 128;
 
-        // create a secret (symmetric) key using PBE with MD5 and Triple DES
-        SecretKeyFactory keyFac = SecretKeyFactory.getInstance("PBEWithMD5AndTripleDES");
-        SecretKey pbeKey = keyFac.generateSecret(pbeKeySpec);
+        // provide password, salt, iteration count, and key length for generating the PBEKey
+        KeySpec pbeKeySpec = new PBEKeySpec(passphrase, salt, iterationCount, keyLength);
 
-        // construct a parameter set for password-based encryption as defined in the PKCS #5 standard
-        PBEParameterSpec pbeParamSpec = new PBEParameterSpec(salt, iterationCount);
+        // create a secret (symmetric) key using PBE with SHA1 and AES
+        SecretKeyFactory keyFac = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        SecretKey tmpKey = keyFac.generateSecret(pbeKeySpec);
+        SecretKey pbeKey = new SecretKeySpec(tmpKey.getEncoded(), "AES");
 
-        // initialize the ciphers with the given key
-        Cipher pbeEcipher = Cipher.getInstance(pbeKey.getAlgorithm());
-        pbeEcipher.init(Cipher.ENCRYPT_MODE, pbeKey, pbeParamSpec);
+        // initialize the encryption cipher
+        Cipher pbeEcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        pbeEcipher.init(Cipher.ENCRYPT_MODE, pbeKey);
 
-        Cipher pbeDcipher = Cipher.getInstance(pbeKey.getAlgorithm());
-        pbeDcipher.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec);
+        // extract the cipher parameters needed for decryption
+        AlgorithmParameters params = pbeEcipher.getParameters();
+        byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
+
+        // initialize the decryption cipher
+        Cipher pbeDcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        pbeDcipher.init(Cipher.DECRYPT_MODE, pbeKey, new IvParameterSpec(iv));
 
         return new Encryption(pbeEcipher, pbeDcipher);
     }

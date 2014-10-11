@@ -4,8 +4,9 @@ package nu.studer.gradle.credentials.domain
 class CredentialsContainerTest extends GroovyTestCase {
 
   void testSetGetCredentials() {
+    def encryptor = CredentialsEncryptor.withPassphrase("somePassphrase".toCharArray());
     def initialCredentials = []
-    def container = new CredentialsContainer(initialCredentials as Properties)
+    def container = new CredentialsContainer(encryptor, initialCredentials as Properties)
     def value = 'someValue'
 
     container.someKey = value
@@ -15,7 +16,9 @@ class CredentialsContainerTest extends GroovyTestCase {
   }
 
   void testGetUnknownPropertyReturnsNull() {
-    def container = new CredentialsContainer(new Properties())
+    def encryptor = CredentialsEncryptor.withPassphrase("somePassphrase".toCharArray());
+    def initialCredentials = []
+    def container = new CredentialsContainer(encryptor, initialCredentials as Properties)
 
     def value = container.someKey
 
