@@ -12,7 +12,7 @@ final class CredentialsContainer {
 
   CredentialsContainer(CredentialsEncryptor credentialsEncryptor, OrderedProperties initialCredentials) {
     this.credentialsEncryptor = credentialsEncryptor
-    this.credentials = initialCredentials
+    this.credentials = OrderedProperties.copyOf(initialCredentials)
   }
 
   def propertyMissing(String name) {
