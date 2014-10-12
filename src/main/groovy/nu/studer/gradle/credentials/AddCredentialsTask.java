@@ -2,6 +2,7 @@ package nu.studer.gradle.credentials;
 
 import nu.studer.gradle.credentials.domain.CredentialsEncryptor;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
+import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
@@ -12,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Properties;
 
 /**
  * Adds/updates the given credentials, specified as project properties.
@@ -58,7 +58,7 @@ public class AddCredentialsTask extends DefaultTask {
         LOGGER.debug(String.format("Add credentials with key: '%s', value: '%s'", key, new String(placeholderValue)));
 
         // read the current persisted credentials
-        Properties credentials = credentialsPersistenceManager.readCredentials();
+        OrderedProperties credentials = credentialsPersistenceManager.readCredentials();
 
         // encrypt value and update credentials
         String encryptedValue = credentialsEncryptor.encrypt(value);

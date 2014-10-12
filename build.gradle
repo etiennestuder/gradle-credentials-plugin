@@ -1,10 +1,10 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath "nu.studer:gradle-plugindev-plugin:$plugindevPluginVersion"
-    }
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath "nu.studer:gradle-plugindev-plugin:$plugindevPluginVersion"
+  }
 }
 
 apply plugin: 'groovy'
@@ -14,27 +14,28 @@ group = 'nu.studer'
 version = '0.0.1'
 
 dependencies {
-    testCompile "junit:junit:$junitVersion"
+  compile "nu.studer:java-ordered-properties-class:$orderedPropertiesVersion"
+  testCompile "junit:junit:$junitVersion"
 }
 
 plugindev {
-    pluginDescription 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
-    pluginImplementationClass 'nu.studer.gradle.credentials.CredentialsPlugin'
-    pluginLicenses 'Apache-2.0'
-    pluginTags 'gradle', 'plugin', 'credentials'
-    authorId 'etiennestuder'
-    authorName 'Etienne Studer'
-    authorEmail 'etienne@studer.nu'
-    projectUrl 'https://github.com/etiennestuder/gradle-credentials-plugin'
-    projectInceptionYear '2014'
-    done()
+  pluginDescription 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
+  pluginImplementationClass 'nu.studer.gradle.credentials.CredentialsPlugin'
+  pluginLicenses 'Apache-2.0'
+  pluginTags 'gradle', 'plugin', 'credentials'
+  authorId 'etiennestuder'
+  authorName 'Etienne Studer'
+  authorEmail 'etienne@studer.nu'
+  projectUrl 'https://github.com/etiennestuder/gradle-credentials-plugin'
+  projectInceptionYear '2014'
+  done()
 }
 
 bintray {
-    user = "$BINTRAY_USER"
-    key = "$BINTRAY_API_KEY"
-    pkg.repo = 'gradle-plugins'
-    dryRun = true
+  user = "$BINTRAY_USER"
+  key = "$BINTRAY_API_KEY"
+  pkg.repo = 'gradle-plugins'
+  dryRun = true
 }
 
 wrapper.gradleVersion = '1.12'

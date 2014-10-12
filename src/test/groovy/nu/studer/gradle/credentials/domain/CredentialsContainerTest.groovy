@@ -1,12 +1,14 @@
 package nu.studer.gradle.credentials.domain
 
+import nu.studer.java.util.OrderedProperties
+
 @SuppressWarnings("GrUnresolvedAccess")
 class CredentialsContainerTest extends GroovyTestCase {
 
   void testSetGetCredentials() {
     def encryptor = CredentialsEncryptor.withPassphrase("somePassphrase".toCharArray());
-    def initialCredentials = []
-    def container = new CredentialsContainer(encryptor, initialCredentials as Properties)
+    def initialCredentials = new OrderedProperties()
+    def container = new CredentialsContainer(encryptor, initialCredentials)
     def value = 'someValue'
 
     container.someKey = value
@@ -17,8 +19,8 @@ class CredentialsContainerTest extends GroovyTestCase {
 
   void testGetUnknownPropertyReturnsNull() {
     def encryptor = CredentialsEncryptor.withPassphrase("somePassphrase".toCharArray());
-    def initialCredentials = []
-    def container = new CredentialsContainer(encryptor, initialCredentials as Properties)
+    def initialCredentials = new OrderedProperties()
+    def container = new CredentialsContainer(encryptor, initialCredentials)
 
     def value = container.someKey
 

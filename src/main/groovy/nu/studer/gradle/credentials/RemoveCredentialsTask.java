@@ -1,6 +1,7 @@
 package nu.studer.gradle.credentials;
 
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
+import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
 
 /**
  * Removes the given credentials, specified as project properties.
@@ -43,10 +43,10 @@ public class RemoveCredentialsTask extends DefaultTask {
         LOGGER.debug(String.format("Remove credentials with key: '%s'", key));
 
         // read the current persisted credentials
-        Properties credentials = credentialsPersistenceManager.readCredentials();
+        OrderedProperties credentials = credentialsPersistenceManager.readCredentials();
 
         // remove the credentials with the given key
-        credentials.remove(key);
+        credentials.removeProperty(key);
 
         // persist the updated credentials
         credentialsPersistenceManager.storeCredentials(credentials);

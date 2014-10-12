@@ -1,28 +1,30 @@
 package nu.studer.gradle.credentials.domain
+
+import nu.studer.java.util.OrderedProperties
+
 /**
  * Transiently retrieves and adds credentials.
  */
 final class CredentialsContainer {
 
   private final CredentialsEncryptor credentialsEncryptor
-  private final Properties credentials
+  private final OrderedProperties credentials
 
-  CredentialsContainer(CredentialsEncryptor credentialsEncryptor, Properties initialCredentials) {
+  CredentialsContainer(CredentialsEncryptor credentialsEncryptor, OrderedProperties initialCredentials) {
     this.credentialsEncryptor = credentialsEncryptor
-    this.credentials = new Properties();
-    this.credentials.putAll(initialCredentials)
+    this.credentials = initialCredentials
   }
 
   def propertyMissing(String name) {
-    if (credentials.containsKey(name)) {
-      credentialsEncryptor.decrypt(credentials[name] as String)
+    if (credentials.containsProperty(name)) {
+      credentialsEncryptor.decrypt(credentials.getProperty(name))
     } else {
       null
     }
   }
 
   def propertyMissing(String name, value) {
-    this.credentials[name] = credentialsEncryptor.encrypt(value as String)
+    credentials.setProperty(name, credentialsEncryptor.encrypt(value as String))
   }
 
 }
