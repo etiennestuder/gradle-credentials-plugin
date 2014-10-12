@@ -88,7 +88,6 @@ public final class CredentialsPersistenceManager {
     private static OrderedProperties createOrderedProperties() {
         return new OrderedProperties.OrderedPropertiesBuilder().
                 withSuppressDateInComment(true).
-                withOrdering(String.CASE_INSENSITIVE_ORDER).
                 build();
     }
 
