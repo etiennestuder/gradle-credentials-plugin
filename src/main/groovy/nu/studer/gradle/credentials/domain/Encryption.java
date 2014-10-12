@@ -8,8 +8,8 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.AlgorithmParameters;
 import java.security.GeneralSecurityException;
+import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
 
 /**
@@ -102,17 +102,22 @@ public final class Encryption {
         SecretKey tmpKey = keyFac.generateSecret(pbeKeySpec);
         SecretKey pbeKey = new SecretKeySpec(tmpKey.getEncoded(), "AES");
 
+        // create a fixed iv spec that can be used both for encryption and for later decryption
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        int blockSize = cipher.getBlockSize();
+        byte[] iv = new byte[blockSize];
+        for (int i = 0; i < iv.length; i++) {
+            iv[i] = (byte) i;
+        }
+        AlgorithmParameterSpec ivSpec = new IvParameterSpec(iv);
+
         // initialize the encryption cipher
         Cipher pbeEcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        pbeEcipher.init(Cipher.ENCRYPT_MODE, pbeKey);
-
-        // extract the cipher parameters needed for decryption
-        AlgorithmParameters params = pbeEcipher.getParameters();
-        byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
+        pbeEcipher.init(Cipher.ENCRYPT_MODE, pbeKey, ivSpec);
 
         // initialize the decryption cipher
         Cipher pbeDcipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        pbeDcipher.init(Cipher.DECRYPT_MODE, pbeKey, new IvParameterSpec(iv));
+        pbeDcipher.init(Cipher.DECRYPT_MODE, pbeKey, ivSpec);
 
         return new Encryption(pbeEcipher, pbeDcipher);
     }
