@@ -29,15 +29,18 @@ public final class CredentialsPersistenceManager {
     }
 
     public OrderedProperties readCredentials() {
+        OrderedProperties credentials = createOrderedProperties();
+
         // read the file with the encrypted credentials, if it already exists
         File file = getCredentialsFile();
         if (file.exists()) {
             LOGGER.debug("Read existing credentials file: " + file.getAbsolutePath());
-            return loadProperties(file);
+            loadProperties(credentials, file);
         } else {
             LOGGER.debug("Credentials file does not exist yet: " + file.getAbsolutePath());
-            return new OrderedProperties();
         }
+
+        return credentials;
     }
 
     public void storeCredentials(OrderedProperties credentials) {
@@ -47,11 +50,11 @@ public final class CredentialsPersistenceManager {
         saveProperties(credentials, file);
     }
 
-    private static OrderedProperties loadProperties(File file) {
+    private static void loadProperties(OrderedProperties properties, File file) {
         try {
             FileInputStream inputStream = new FileInputStream(file);
             try {
-                return loadProperties(inputStream);
+                loadProperties(properties, inputStream);
             } finally {
                 inputStream.close();
             }
@@ -60,15 +63,13 @@ public final class CredentialsPersistenceManager {
         }
     }
 
-    private static OrderedProperties loadProperties(InputStream inputStream) {
-        OrderedProperties properties = new OrderedProperties();
+    private static void loadProperties(OrderedProperties properties, InputStream stream) {
         try {
-            properties.load(inputStream);
-            inputStream.close();
+            properties.load(stream);
+            stream.close();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-        return properties;
     }
 
     private static void saveProperties(OrderedProperties properties, File file) {
@@ -82,6 +83,13 @@ public final class CredentialsPersistenceManager {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    private static OrderedProperties createOrderedProperties() {
+        return new OrderedProperties.OrderedPropertiesBuilder().
+                withSuppressDateInComment(true).
+                withOrdering(String.CASE_INSENSITIVE_ORDER).
+                build();
     }
 
 }
