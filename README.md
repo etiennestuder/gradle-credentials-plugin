@@ -96,7 +96,7 @@ _MD5HASH_ is calculated from the specified passphrase.
 ### Remove encrypted credentials
 
 You can remove existing credentials through the `removeCredentials` task. Pass along
-the credentials key project property. The credentials are removed from the 
+the credentials key through the `credentialsKey` project property. The credentials are removed from the 
 _GRADLE_USER_HOME/gradle.encrypted.properties_.
 
     gradle removeCredentials -PcredentialsKey=someKey
