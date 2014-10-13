@@ -137,6 +137,11 @@ credentials.someAccountName = 'verySecret'
 
 Credentials added ad-hoc during the build are not persisted on the file system.
 
+# Example
+
+The build script of the credentials plugin makes use of itself and serves as a real-world example. You 
+can also find a self-contained example build script [here](example/build.gradle).
+
 # Feedback and Contributions
 
 Both feedback and contributions are very welcome.
