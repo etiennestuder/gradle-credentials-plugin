@@ -14,7 +14,7 @@ group = 'nu.studer'
 version = '0.0.1'
 
 dependencies {
-  compile "nu.studer:java-ordered-properties-class:$orderedPropertiesVersion"
+  compile "nu.studer:java-ordered-properties:$orderedPropertiesVersion"
   testCompile "junit:junit:$junitVersion"
 }
 
