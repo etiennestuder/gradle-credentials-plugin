@@ -11,7 +11,7 @@ apply plugin: 'groovy'
 apply plugin: 'nu.studer.plugindev'
 
 group = 'nu.studer'
-version = '0.0.1'
+version = '0.0.2'
 
 dependencies {
   compile "nu.studer:java-ordered-properties:$orderedPropertiesVersion"
