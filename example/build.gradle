@@ -1,7 +1,6 @@
 buildscript {
   repositories {
-    // jcenter()
-    mavenLocal()
+    jcenter()
   }
   dependencies {
     classpath "nu.studer:gradle-credentials-plugin:$credentialsPluginVersion"
