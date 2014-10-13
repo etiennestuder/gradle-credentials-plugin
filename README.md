@@ -34,8 +34,7 @@ All access and storage of credentials goes through password-based encryption. Th
 can either be specified as a project property from the command line, or a default passphrase 
 is used. The JDK encryption algorithm applied is _AES_ using a key that is generated using 
 _PBKDF2WithHmacSHA1_ from an 8-byte salt, an iteration count of 65536, and a key length of 
-128 (longer keys require local installation of the JRE Security Extension). Using a strong 
-passphrase, this encryption is quite good. 
+128 (longer keys require local installation of the JRE Security Extension).
 
 Access to the stored credentials from within a Gradle build happens through the 
 `credentials` project property. All read and write operations to the credentials container
