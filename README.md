@@ -82,30 +82,30 @@ understand the behavior and limitations when using the new syntax to declare plu
 ### Store encrypted credentials
  
 You can store new credentials or update existing credentials through the `addCredentials` task. Pass along
-the credentials key and value through the `credentialsKey` and `credentialsValue` project properties. The 
+the credentials key and value through the task options `--key` and `--value`. The 
 credentials are stored in the _GRADLE_USER_HOME/gradle.encrypted.properties_.
 
-    gradle addCredentials -PcredentialsKey=someKey -PcredentialsValue=someValue
+    gradle addCredentials --key someKey --value someValue
     
 Optionally, pass along a custom passphrase through the `credentialsPassphrase` project property. The 
 credentials are stored in the passphrase-specific _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the 
 _MD5HASH_ is calculated from the specified passphrase.
 
-    gradle addCredentials -PcredentialsKey=someKey -PcredentialsValue=someValue -PcredentialsPassphrase=mySecretPassPhrase
+    gradle addCredentials --key someKey --value someValue -PcredentialsPassphrase=mySecretPassPhrase
 
 ### Remove encrypted credentials
 
 You can remove existing credentials through the `removeCredentials` task. Pass along
-the credentials key through the `credentialsKey` project property. The credentials are removed from the 
+the credentials key through the `--key` project property. The credentials are removed from the 
 _GRADLE_USER_HOME/gradle.encrypted.properties_.
 
-    gradle removeCredentials -PcredentialsKey=someKey
+    gradle removeCredentials --key someKey
     
 Optionally, pass along a custom passphrase through the `credentialsPassphrase` project property. The 
 credentials are removed from the passphrase-specific _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the 
 _MD5HASH_ is calculated from the specified passphrase.
 
-    gradle removeCredentials -PcredentialsKey=someKey -PcredentialsPassphrase=mySecretPassPhrase
+    gradle removeCredentials --key someKey -PcredentialsPassphrase=mySecretPassPhrase
 
 ## Access credentials in build
 
