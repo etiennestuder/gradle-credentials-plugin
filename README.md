@@ -59,7 +59,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'nu.studer:gradle-credentials-plugin:1.0.0'
+        classpath 'nu.studer:gradle-credentials-plugin:1.0.1'
     }
 }
 
@@ -70,7 +70,7 @@ apply plugin: 'nu.studer.credentials'
 
 ```groovy
 plugins {
-  id 'nu.studer.credentials' version '1.0.0'
+  id 'nu.studer.credentials' version '1.0.1'
 }
 ```
 
