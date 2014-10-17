@@ -4,6 +4,7 @@ import nu.studer.gradle.credentials.domain.CredentialsEncryptor;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.internal.tasks.options.Option;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -23,6 +24,8 @@ public class AddCredentialsTask extends DefaultTask {
 
     private CredentialsEncryptor credentialsEncryptor;
     private CredentialsPersistenceManager credentialsPersistenceManager;
+    private String key;
+    private String value;
 
     public void setCredentialsEncryptor(CredentialsEncryptor credentialsEncryptor) {
         this.credentialsEncryptor = credentialsEncryptor;
@@ -32,14 +35,24 @@ public class AddCredentialsTask extends DefaultTask {
         this.credentialsPersistenceManager = credentialsPersistenceManager;
     }
 
+    @Option(option = "key", description = "The credentials key.")
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    @Option(option = "value", description = "The credentials value.")
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Input
     public String getCredentialsKey() {
-        return getProjectProperty(CredentialsPlugin.CREDENTIALS_KEY_PROPERTY);
+        return key != null ? key : getProjectProperty(CredentialsPlugin.CREDENTIALS_KEY_PROPERTY);
     }
 
     @Input
     public String getCredentialsValue() {
-        return getProjectProperty(CredentialsPlugin.CREDENTIALS_VALUE_PROPERTY);
+        return value != null ? value : getProjectProperty(CredentialsPlugin.CREDENTIALS_VALUE_PROPERTY);
     }
 
     @OutputFile

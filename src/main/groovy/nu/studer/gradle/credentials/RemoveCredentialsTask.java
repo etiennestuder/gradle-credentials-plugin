@@ -3,6 +3,7 @@ package nu.studer.gradle.credentials;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.internal.tasks.options.Option;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -20,14 +21,20 @@ public class RemoveCredentialsTask extends DefaultTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoveCredentialsTask.class);
 
     private CredentialsPersistenceManager credentialsPersistenceManager;
+    private String key;
 
     public void setCredentialsPersistenceManager(CredentialsPersistenceManager credentialsPersistenceManager) {
         this.credentialsPersistenceManager = credentialsPersistenceManager;
     }
 
+    @Option(option = "key", description = "The credentials key.")
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     @Input
     public String getCredentialsKey() {
-        return getProjectProperty(CredentialsPlugin.CREDENTIALS_KEY_PROPERTY);
+        return key != null ? key : getProjectProperty(CredentialsPlugin.CREDENTIALS_KEY_PROPERTY);
     }
 
     @OutputFile
