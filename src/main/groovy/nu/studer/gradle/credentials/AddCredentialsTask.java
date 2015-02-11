@@ -1,7 +1,7 @@
 package nu.studer.gradle.credentials;
 
-import nu.studer.gradle.credentials.domain.CredentialsEncryptor;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
+import nu.studer.gradle.credentials.domain.Encryptor;
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.internal.tasks.options.Option;
@@ -22,12 +22,12 @@ public class AddCredentialsTask extends DefaultTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentialsTask.class);
 
-    private CredentialsEncryptor credentialsEncryptor;
+    private Encryptor credentialsEncryptor;
     private CredentialsPersistenceManager credentialsPersistenceManager;
     private String key;
     private String value;
 
-    public void setCredentialsEncryptor(CredentialsEncryptor credentialsEncryptor) {
+    public void setCredentialsEncryptor(Encryptor credentialsEncryptor) {
         this.credentialsEncryptor = credentialsEncryptor;
     }
 

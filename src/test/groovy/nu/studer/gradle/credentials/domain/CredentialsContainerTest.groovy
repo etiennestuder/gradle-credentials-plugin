@@ -26,5 +26,4 @@ class CredentialsContainerTest extends GroovyTestCase {
 
     assertNull(value)
   }
-
 }

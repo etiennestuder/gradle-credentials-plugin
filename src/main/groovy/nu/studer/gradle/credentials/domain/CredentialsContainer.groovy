@@ -5,13 +5,12 @@ import nu.studer.java.util.OrderedProperties
 /**
  * Transiently retrieves and adds credentials.
  */
-final class CredentialsContainer {
-
-  private final CredentialsEncryptor credentialsEncryptor
+class CredentialsContainer {
+  private final Encryptor credentialsEncryptor
   private final OrderedProperties credentials
 
-  CredentialsContainer(CredentialsEncryptor credentialsEncryptor, OrderedProperties initialCredentials) {
-    this.credentialsEncryptor = credentialsEncryptor
+  CredentialsContainer(Encryptor encryptor, OrderedProperties initialCredentials) {
+    this.credentialsEncryptor = encryptor
     this.credentials = OrderedProperties.copyOf(initialCredentials)
   }
 

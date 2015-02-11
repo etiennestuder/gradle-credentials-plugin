@@ -5,7 +5,7 @@ package nu.studer.gradle.credentials.domain;
  *
  * @see Encryption
  */
-public final class CredentialsEncryptor {
+public final class CredentialsEncryptor implements Encryptor {
 
     private final Encryption encryption;
 
@@ -20,7 +20,7 @@ public final class CredentialsEncryptor {
      * @return the encrypted string
      */
     public String encrypt(String string) {
-        return string != null ? encryption.encrypt(string) : null;
+        return encryption != null && string != null ? encryption.encrypt(string) : null;
     }
 
     /**
@@ -30,7 +30,7 @@ public final class CredentialsEncryptor {
      * @return the decrypted string
      */
     public String decrypt(String string) {
-        return string != null ? encryption.decrypt(string) : null;
+        return encryption != null && string != null ? encryption.decrypt(string) : null;
     }
 
     /**

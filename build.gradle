@@ -13,7 +13,7 @@ apply plugin: 'nu.studer.plugindev'
 apply plugin: 'nu.studer.credentials'
 
 group = 'nu.studer'
-version = '1.0.2.DEV'
+version = '1.1.0.DEV'
 
 dependencies {
   compile "nu.studer:java-ordered-properties:$orderedPropertiesVersion"
@@ -40,4 +40,4 @@ bintray {
   dryRun = true
 }
 
-wrapper.gradleVersion = '1.12'
+wrapper.gradleVersion = '2.2.1'
