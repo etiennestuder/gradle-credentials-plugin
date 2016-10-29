@@ -48,7 +48,7 @@ public class CredentialsPlugin implements Plugin<Project> {
         String credentialsFileName = deriveFileNameFromPassphrase(passphrase);
 
         // create credentials encryptor for the given passphrase
-        CredentialsEncryptor credentialsEncryptor = CredentialsEncryptor.withPassphrase(CredentialsPlugin.DEFAULT_PASSPHRASE.toCharArray());
+        CredentialsEncryptor credentialsEncryptor = CredentialsEncryptor.withPassphrase(passphrase.toCharArray());
 
         // create a credentials persistence manager that operates on the credentials file
         File gradleUserHomeDir = project.getGradle().getGradleUserHomeDir();
