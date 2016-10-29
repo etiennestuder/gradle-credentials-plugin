@@ -37,5 +37,5 @@ bintray {
   user = credentials.BINTRAY_USER
   key = credentials.BINTRAY_API_KEY
   pkg.repo = 'gradle-plugins'
-  dryRun = true
+  dryRun = false
 }
