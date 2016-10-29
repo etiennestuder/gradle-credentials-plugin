@@ -39,5 +39,3 @@ bintray {
   pkg.repo = 'gradle-plugins'
   dryRun = true
 }
-
-wrapper.gradleVersion = '1.12'
