@@ -3,6 +3,7 @@ package nu.studer.gradle.credentials;
 import nu.studer.gradle.credentials.domain.CredentialsContainer;
 import nu.studer.gradle.credentials.domain.CredentialsEncryptor;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
+import nu.studer.gradle.util.AlwaysFalseSpec;
 import nu.studer.gradle.util.MD5;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -66,6 +67,7 @@ public class CredentialsPlugin implements Plugin<Project> {
         addCredentials.setGroup("Credentials");
         addCredentials.setCredentialsEncryptor(credentialsEncryptor);
         addCredentials.setCredentialsPersistenceManager(credentialsPersistenceManager);
+        addCredentials.getOutputs().upToDateWhen(AlwaysFalseSpec.INSTANCE);
         LOGGER.debug(String.format("Registered task '%s'", addCredentials.getName()));
 
         // add a task instance that removes some credentials through the credentials persistence manager
