@@ -75,6 +75,7 @@ public class CredentialsPlugin implements Plugin<Project> {
         removeCredentials.setDescription("Removes the credentials specified through the project property 'credentialsKey'.");
         removeCredentials.setGroup("Credentials");
         removeCredentials.setCredentialsPersistenceManager(credentialsPersistenceManager);
+        removeCredentials.getOutputs().upToDateWhen(AlwaysFalseSpec.INSTANCE);
         LOGGER.debug(String.format("Registered task '%s'", removeCredentials.getName()));
     }
 
