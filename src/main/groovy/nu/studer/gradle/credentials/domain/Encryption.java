@@ -14,10 +14,10 @@ import java.security.spec.KeySpec;
 
 /**
  * Encryption/decryption of text using ciphers.
- * <p/>
+ * <p>
  * Note: The author of this class is by far not a security expert. The chosen implementation has been primarily gathered from examples in the javax.crypto Javadoc and from
  * discussions on StackOverflow.
- * <p/>
+ * <p>
  * See also <a href="http://stackoverflow.com/questions/992019/java-256-bit-aes-password-based-encryption">here</a> for a more detailed explanation on the selected security
  * algorithms.
  */
