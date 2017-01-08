@@ -54,6 +54,11 @@ public class CredentialsPlugin implements Plugin<Project> {
         // create a credentials persistence manager that operates on the credentials file
         File gradleUserHomeDir = project.getGradle().getGradleUserHomeDir();
         File credentialsFile = new File(gradleUserHomeDir, credentialsFileName);
+
+        if(project.hasProperty("credentialsFile")) {
+            credentialsFile = project.file(project.getProperties().get("credentialsFile"));
+        }
+
         CredentialsPersistenceManager credentialsPersistenceManager = new CredentialsPersistenceManager(credentialsFile);
 
         // add a new 'credentials' property and transiently store the persisted credentials for access in build scripts
