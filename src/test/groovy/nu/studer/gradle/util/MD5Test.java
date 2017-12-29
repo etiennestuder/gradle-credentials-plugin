@@ -2,7 +2,7 @@ package nu.studer.gradle.util;
 
 import org.junit.Test;
 
-import javax.xml.bind.DatatypeConverter;
+import org.apache.commons.codec.binary.Hex;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -24,7 +24,7 @@ public class MD5Test {
     @Test
     public void convertByteArrayToHexString() throws Exception {
         byte[] bytes = new byte[]{-128, -1, 0, 9, 10, 11, 17, 127};
-        String hex = DatatypeConverter.printHexBinary(bytes);
+        String hex = Hex.encodeHexString(bytes).toUpperCase();
         assertEquals("80FF00090A0B117F", hex);
     }
 
