@@ -2,8 +2,6 @@ package nu.studer.gradle.util;
 
 import java.security.MessageDigest;
 
-import org.apache.commons.codec.binary.Hex;
-
 /**
  * Utilities related to MD5 hashing.
  */
@@ -22,7 +20,7 @@ public final class MD5 {
         try {
             MessageDigest digest = MessageDigest.getInstance("MD5");
             byte[] hashedBytes = digest.digest(string.getBytes("UTF-8"));
-            return Hex.encodeHexString(hashedBytes).toUpperCase();
+            return Base64.printHexBinary(hashedBytes);
         } catch (Exception e) {
             throw new RuntimeException("Cannot generate MD5 hash for string '" + string + "': " + e.getMessage(), e);
         }

@@ -1,5 +1,7 @@
 package nu.studer.gradle.util;
 
+import static org.apache.commons.codec.binary.Hex.encodeHex;
+
 /**
  * Utilities related to Base64 encoding.
  */
@@ -16,6 +18,7 @@ public final class Base64 {
      */
     public static String encodeBase64(byte[] bytes) {
         return org.apache.commons.codec.binary.Base64.encodeBase64String(bytes);
+//        return StringUtils.newStringUtf8(org.apache.commons.codec.binary.Base64.encodeBase64(bytes, false));
     }
 
     /**
@@ -26,6 +29,16 @@ public final class Base64 {
      */
     public static byte[] decodeBase64(String string) {
         return org.apache.commons.codec.binary.Base64.decodeBase64(string);
+    }
+
+    /**
+     * Print the given bytes as a HEX string.
+     *
+     * @param bytes the bytes to covert to a HEX string
+     * @return the resulting string
+     */
+    public static String printHexBinary(byte[] bytes) {
+        return new String(encodeHex(bytes, false));
     }
 
 }
