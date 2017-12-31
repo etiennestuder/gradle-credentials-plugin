@@ -148,7 +148,7 @@ Both feedback and contributions are very welcome.
 
 # Acknowledgements
 
-None, yet.
++ [aingram](https://github.com/aingram) (pr)
 
 # License
 
