@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.io.UnsupportedEncodingException;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 public class Base64Test {
 
@@ -16,6 +17,13 @@ public class Base64Test {
         byte[] decoded = Base64.decodeBase64(encoded);
 
         assertArrayEquals(textToEncode, decoded);
+    }
+
+    @Test
+    public void printHexBinary() {
+        byte[] bytes = new byte[]{-128, -1, 0, 9, 10, 11, 17, 127};
+        String hex = Base64.printHexBinary(bytes);
+        assertEquals("80FF00090A0B117F", hex);
     }
 
 }
