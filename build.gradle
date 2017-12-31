@@ -16,7 +16,7 @@ apply plugin: 'nu.studer.plugindev'
 apply plugin: 'nu.studer.credentials'
 
 group = 'nu.studer'
-version = '1.0.4-DEV'
+version = '1.0.4'
 
 buildScan {
   licenseAgreementUrl 'https://gradle.com/terms-of-service'
