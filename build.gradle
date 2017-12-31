@@ -25,6 +25,7 @@ buildScan {
 
 dependencies {
   compile "nu.studer:java-ordered-properties:$orderedPropertiesVersion"
+  compile "commons-codec:commons-codec:$commonsCodecVersion"
   testCompile "junit:junit:$junitVersion"
 }
 

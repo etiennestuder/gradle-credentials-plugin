@@ -1,7 +1,5 @@
 package nu.studer.gradle.util;
 
-import javax.xml.bind.DatatypeConverter;
-
 /**
  * Utilities related to Base64 encoding.
  */
@@ -17,7 +15,7 @@ public final class Base64 {
      * @return the resulting Base64 string
      */
     public static String encodeBase64(byte[] bytes) {
-        return DatatypeConverter.printBase64Binary(bytes);
+        return org.apache.commons.codec.binary.Base64.encodeBase64String(bytes);
     }
 
     /**
@@ -27,7 +25,7 @@ public final class Base64 {
      * @return the resulting bytes
      */
     public static byte[] decodeBase64(String string) {
-        return DatatypeConverter.parseBase64Binary(string);
+        return org.apache.commons.codec.binary.Base64.decodeBase64(string);
     }
 
 }
