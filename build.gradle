@@ -19,8 +19,8 @@ group = 'nu.studer'
 version = '1.0.5-DEV'
 
 buildScan {
-  licenseAgreementUrl 'https://gradle.com/terms-of-service'
-  licenseAgree 'yes'
+  termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+  termsOfServiceAgree = 'yes'
 }
 
 dependencies {

@@ -3,7 +3,7 @@ package nu.studer.gradle.credentials;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.internal.tasks.options.Option;
+import org.gradle.api.tasks.options.Option;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
