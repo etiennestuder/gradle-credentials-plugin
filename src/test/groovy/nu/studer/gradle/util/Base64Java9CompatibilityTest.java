@@ -1,6 +1,6 @@
 package nu.studer.gradle.util;
 
-import groovy.json.internal.Charsets;
+import org.gradle.internal.impldep.com.google.common.base.Charsets;
 import org.junit.Test;
 
 import javax.xml.bind.DatatypeConverter;
