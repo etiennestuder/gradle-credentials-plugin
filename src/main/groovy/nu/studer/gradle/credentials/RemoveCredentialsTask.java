@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Removes the given credentials, specified as project properties.
@@ -27,6 +26,7 @@ public class RemoveCredentialsTask extends DefaultTask {
     }
 
     @Option(option = "key", description = "The credentials key.")
+    @org.gradle.api.tasks.options.Option(option = "key", description = "The credentials key.")
     public void setKey(String key) {
         this.key = key;
     }
@@ -41,7 +41,7 @@ public class RemoveCredentialsTask extends DefaultTask {
     }
 
     @TaskAction
-    void removeCredentials() throws IOException {
+    void removeCredentials() {
         // get credentials key from the project properties
         String key = getCredentialsKey();
 

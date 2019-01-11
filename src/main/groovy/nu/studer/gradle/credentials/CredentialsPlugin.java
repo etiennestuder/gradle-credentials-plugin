@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.Map;
 
 /**
  * Plugin to store and access encrypted credentials using password-based encryption (PBE). The credentials are stored in the Gradle home directory in a separate file for each
@@ -93,8 +92,7 @@ public class CredentialsPlugin implements Plugin<Project> {
     }
 
     private String getProjectProperty(String key, String defaultValue, Project project) {
-        Map<String, ?> properties = project.getProperties();
-        return properties.containsKey(key) ? (String) properties.get(key) : defaultValue;
+        return project.hasProperty(key) ? (String) project.property(key) : defaultValue;
     }
 
 }

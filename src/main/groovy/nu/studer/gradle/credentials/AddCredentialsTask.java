@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -35,11 +34,13 @@ public class AddCredentialsTask extends DefaultTask {
     }
 
     @Option(option = "key", description = "The credentials key.")
+    @org.gradle.api.tasks.options.Option(option = "key", description = "The credentials key.")
     public void setKey(String key) {
         this.key = key;
     }
 
     @Option(option = "value", description = "The credentials value.")
+    @org.gradle.api.tasks.options.Option(option = "value", description = "The credentials value.")
     public void setValue(String value) {
         this.value = value;
     }
@@ -60,7 +61,7 @@ public class AddCredentialsTask extends DefaultTask {
     }
 
     @TaskAction
-    void addCredentials() throws IOException {
+    void addCredentials() {
         // get credentials key and value from the project properties
         String key = getCredentialsKey();
         String value = getCredentialsValue();
