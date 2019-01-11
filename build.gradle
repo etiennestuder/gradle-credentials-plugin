@@ -18,6 +18,9 @@ dependencies {
   compile "commons-codec:commons-codec:1.11"
 
   testCompile "junit:junit:4.12"
+  testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+    exclude module: 'groovy-all'
+  }
 }
 
 plugindev {
@@ -45,7 +48,8 @@ test {
 }
 
 def testAll = tasks.create('testAll') {
-  group = 'Gradle cross-version test'
+  description = 'Runs the Gradle cross-version tests.'
+  group = 'Verification'
 }
 
 List<String> testedGradleVersions = []
