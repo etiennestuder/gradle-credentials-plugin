@@ -12,18 +12,7 @@ class CredentialsFuncTest extends BaseFuncTest {
 
   void "cannot access credentials added in same build execution"() {
     given:
-    buildFile << """
-plugins {
-    id 'nu.studer.credentials'
-}
-
-task printValue {
-  doLast {
-    String val = credentials.someKey
-    println "value: \$val"
-  }
-}
-"""
+    buildFile()
 
     when:
     def result = runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', 'printValue', '-i')
@@ -35,18 +24,7 @@ task printValue {
 
   void "can access credentials added in previous build execution"() {
     given:
-    buildFile << """
-plugins {
-    id 'nu.studer.credentials'
-}
-
-task printValue {
-  doLast {
-    String val = credentials.someKey
-    println "value: \$val"
-  }
-}
-"""
+    buildFile()
 
     when:
     runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
@@ -59,18 +37,7 @@ task printValue {
 
   void "can access credentials with dollar character in value"() {
     given:
-    buildFile << """
-plugins {
-    id 'nu.studer.credentials'
-}
-
-task printValue {
-  doLast {
-    String val = credentials.someKey
-    println "value: \$val"
-  }
-}
-"""
+    buildFile()
 
     when:
     runWithArguments('addCredentials', '--key', 'someKey', '--value', 'before$after', '-i')
@@ -83,18 +50,7 @@ task printValue {
 
   void "can access credentials added with custom passphrase"() {
     given:
-    buildFile << """
-plugins {
-    id 'nu.studer.credentials'
-}
-
-task printValue {
-  doLast {
-    String val = credentials.someKey
-    println "value: \$val"
-  }
-}
-"""
+    buildFile()
 
     when:
     runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=xyz', '-i')
@@ -107,18 +63,7 @@ task printValue {
 
   void "cannot access credentials used with different passphrase from when added with custom passphrase"() {
     given:
-    buildFile << """
-plugins {
-    id 'nu.studer.credentials'
-}
-
-task printValue {
-  doLast {
-    String val = credentials.someKey
-    println "value: \$val"
-  }
-}
-"""
+    buildFile()
 
     when:
     runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=xyz', '-i')
@@ -131,18 +76,7 @@ task printValue {
 
   void "cannot access credentials used with different passphrase from when added with default passphrase"() {
     given:
-    buildFile << """
-plugins {
-    id 'nu.studer.credentials'
-}
-
-task printValue {
-  doLast {
-    String val = credentials.someKey
-    println "value: \$val"
-  }
-}
-"""
+    buildFile()
 
     when:
     runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
@@ -182,6 +116,21 @@ task printValue {
     then:
     result.task(':printValue').outcome == TaskOutcome.SUCCESS
     result.output.contains('value: someValue')
+  }
+
+  private File buildFile() {
+    buildFile << """
+plugins {
+    id 'nu.studer.credentials'
+}
+
+task printValue {
+  doLast {
+    String val = credentials.someKey
+    println "value: \$val"
+  }
+}
+"""
   }
 
 }
