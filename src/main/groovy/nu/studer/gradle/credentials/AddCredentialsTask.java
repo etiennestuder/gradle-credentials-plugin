@@ -5,6 +5,7 @@ import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.internal.tasks.options.Option;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
@@ -45,12 +46,12 @@ public class AddCredentialsTask extends DefaultTask {
         this.value = value;
     }
 
-    // do not annotate as @Input to avoid the key being stored in the task artifact cache
+    @Internal("Do not annotate as @Input to avoid the key being stored in the task artifact cache")
     public String getCredentialsKey() {
         return key != null ? key : getProjectProperty(CredentialsPlugin.CREDENTIALS_KEY_PROPERTY);
     }
 
-    // do not annotate as @Input to avoid the value being stored in the task artifact cache
+    @Internal("Do not annotate as @Input to avoid the value being stored in the task artifact cache")
     public String getCredentialsValue() {
         return value != null ? value : getProjectProperty(CredentialsPlugin.CREDENTIALS_VALUE_PROPERTY);
     }
