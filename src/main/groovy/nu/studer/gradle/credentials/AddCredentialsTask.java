@@ -62,9 +62,16 @@ public class AddCredentialsTask extends DefaultTask {
 
     @TaskAction
     void addCredentials() {
-        // get credentials key and value from the project properties
+        // get credentials key and value from the command line or project properties
         String key = getCredentialsKey();
+        if (key == null) {
+            throw new IllegalArgumentException("Credentials key must not be null");
+        }
+
         String value = getCredentialsValue();
+        if (value == null) {
+            throw new IllegalArgumentException("Credentials value must not be null");
+        }
 
         char[] placeholderValue = new char[value.length()];
         Arrays.fill(placeholderValue, '*');

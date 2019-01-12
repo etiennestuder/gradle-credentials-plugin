@@ -10,6 +10,30 @@ class CredentialsFuncTest extends BaseFuncTest {
     new File(testKitDir, 'gradle.encrypted.properties').delete()
   }
 
+  void "cannot add credentials with null key"() {
+    given:
+    buildFile()
+
+    when:
+    def result = runAndFailWithArguments('addCredentials', '--value', 'someValue', '-i')
+
+    then:
+    result.task(':addCredentials').outcome == TaskOutcome.FAILED
+    result.output.contains('Credentials key must not be null')
+  }
+
+  void "cannot add credentials with null value"() {
+    given:
+    buildFile()
+
+    when:
+    def result = runAndFailWithArguments('addCredentials', '--key', 'someKey', '-i')
+
+    then:
+    result.task(':addCredentials').outcome == TaskOutcome.FAILED
+    result.output.contains('Credentials value must not be null')
+  }
+
   void "cannot access credentials added in same build execution"() {
     given:
     buildFile()

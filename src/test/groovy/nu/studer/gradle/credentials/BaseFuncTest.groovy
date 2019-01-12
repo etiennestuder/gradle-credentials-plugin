@@ -51,6 +51,18 @@ abstract class BaseFuncTest extends Specification {
             .build()
   }
 
+  protected BuildResult runAndFailWithArguments(String... args) {
+    GradleRunner.create()
+            .withPluginClasspath()
+            .withTestKitDir(testKitDir)
+            .withProjectDir(workspaceDir)
+            .withArguments(args)
+            .withGradleVersion(gradleVersion.version)
+            .withDebug(isDebuggerAttached())
+            .forwardOutput()
+            .buildAndFail()
+  }
+
   protected File getBuildFile() {
     file('build.gradle')
   }
