@@ -74,11 +74,8 @@ public final class CredentialsPersistenceManager {
 
     private static void saveProperties(OrderedProperties properties, File file) {
         try {
-            FileOutputStream propertiesFileOutputStream = new FileOutputStream(file);
-            try {
+            try (FileOutputStream propertiesFileOutputStream = new FileOutputStream(file)) {
                 properties.store(propertiesFileOutputStream, null);
-            } finally {
-                propertiesFileOutputStream.close();
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
