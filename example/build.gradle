@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath "nu.studer:gradle-credentials-plugin:$credentialsPluginVersion"
+    classpath "nu.studer:gradle-credentials-plugin:1.0.6"
   }
 }
 
@@ -23,5 +23,3 @@ credentials.someAccountPassword = 'secret!'
 
 // read credentials at build time
 println "Password: " + credentials.someAccountPassword
-
-wrapper.gradleVersion = '1.12'
