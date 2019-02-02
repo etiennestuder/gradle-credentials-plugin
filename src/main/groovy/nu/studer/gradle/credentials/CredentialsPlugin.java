@@ -30,6 +30,7 @@ public class CredentialsPlugin implements Plugin<Project> {
 
     public static final String CREDENTIALS_CONTAINER_PROPERTY = "credentials";
 
+    public static final String CREDENTIALS_LOCATION_PROPERTY = "credentialsLocation";
     public static final String CREDENTIALS_PASSPHRASE_PROPERTY = "credentialsPassphrase";
     public static final String CREDENTIALS_KEY_PROPERTY = "credentialsKey";
     public static final String CREDENTIALS_VALUE_PROPERTY = "credentialsValue";
@@ -50,9 +51,10 @@ public class CredentialsPlugin implements Plugin<Project> {
         // create credentials encryptor for the given passphrase
         CredentialsEncryptor credentialsEncryptor = CredentialsEncryptor.withPassphrase(passphrase.toCharArray());
 
-        // create a credentials persistence manager that operates on the credentials file
-        File gradleUserHomeDir = project.getGradle().getGradleUserHomeDir();
-        File credentialsFile = new File(gradleUserHomeDir, credentialsFileName);
+        // create a credentials persistence manager that operates on the credentials file, possibly located in a user-configured folder
+        String customCredentialsLocation = getProjectProperty(CREDENTIALS_LOCATION_PROPERTY, null, project);
+        File credentialsLocationDir = customCredentialsLocation != null ? project.file(customCredentialsLocation) : project.getGradle().getGradleUserHomeDir();
+        File credentialsFile = new File(credentialsLocationDir, credentialsFileName);
         CredentialsPersistenceManager credentialsPersistenceManager = new CredentialsPersistenceManager(credentialsFile);
 
         // add a new 'credentials' property and transiently store the persisted credentials for access in build scripts

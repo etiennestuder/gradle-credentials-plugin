@@ -93,6 +93,10 @@ _MD5HASH_ is calculated from the specified passphrase.
 
     gradle addCredentials --key someKey --value someValue -PcredentialsPassphrase=mySecretPassPhrase
 
+Optionally, pass along a custom directory location of the credentials file through the `credentialsLocation` project property.
+
+    gradle addCredentials --key someKey --value someValue -PcredentialsLocation=/some/directory
+
 ### Remove encrypted credentials
 
 You can remove existing credentials through the `removeCredentials` task. Pass along
@@ -106,6 +110,10 @@ credentials are removed from the passphrase-specific _GRADLE_USER_HOME/gradle.MD
 _MD5HASH_ is calculated from the specified passphrase.
 
     gradle removeCredentials --key someKey -PcredentialsPassphrase=mySecretPassPhrase
+
+Optionally, pass along a custom directory location of the credentials file through the `credentialsLocation` project property.
+
+    gradle addCredentials --key someKey --value someValue -PcredentialsLocation=/some/directory
 
 ## Access credentials in build
 
@@ -125,6 +133,9 @@ If a custom passphrase is passed through the `credentialsPassphrase` project pro
 the `credentials` container is initialized with all credentials persisted in the passphrase-specific
 _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the _MD5HASH_ is calculated from the
 specified passphrase.
+
+If a custom directory location is passed through the `credentialsLocation` project property when starting the build,
+the credentials file will be seeked in that directory.
 
 ### Add credentials ad-hoc from within a build
 

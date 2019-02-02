@@ -1,10 +1,15 @@
 package nu.studer.gradle.credentials
 
 import org.gradle.testkit.runner.TaskOutcome
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import spock.lang.Unroll
 
 @Unroll
 class CredentialsFuncTest extends BaseFuncTest {
+
+  @Rule
+  TemporaryFolder tempFolder
 
   void setup() {
     new File(testKitDir, 'gradle.encrypted.properties').delete()
@@ -109,6 +114,28 @@ class CredentialsFuncTest extends BaseFuncTest {
     then:
     result.task(':printValue').outcome == TaskOutcome.SUCCESS
     result.output.contains('value: null')
+  }
+
+  void "can configure custom location of password file"() {
+    given:
+    buildFile()
+    def location = tempFolder.newFolder()
+
+    when:
+    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsLocation=' + location.canonicalPath, '-i')
+    def result = runWithArguments('printValue', '-PcredentialsLocation=' + location.canonicalPath, '-i')
+
+    then:
+    result.task(':printValue').outcome == TaskOutcome.SUCCESS
+    result.output.contains('value: someValue')
+
+    when:
+    result = runWithArguments('printValue', '-i')
+
+    then:
+    result.task(':printValue').outcome == TaskOutcome.SUCCESS
+    result.output.contains('value: null')
+
   }
 
   void "can apply plugin in conjunction with the maven publish plugins"() {
