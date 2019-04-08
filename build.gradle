@@ -1,5 +1,5 @@
 plugins {
-  id 'com.gradle.build-scan' version '1.16'
+  id 'com.gradle.build-scan' version '2.2.1'
   id 'nu.studer.plugindev' version '1.0.12'
   id 'nu.studer.credentials' version '1.0.7'
   id 'groovy'
@@ -9,8 +9,8 @@ group = 'nu.studer'
 version = '1.0.8-DEV'
 
 buildScan {
-  licenseAgreementUrl 'https://gradle.com/terms-of-service'
-  licenseAgree 'yes'
+  termsOfServiceUrl 'https://gradle.com/terms-of-service'
+  termsOfServiceAgree 'yes'
 }
 
 dependencies {
@@ -52,11 +52,11 @@ def testAll = tasks.create('testAll') {
 }
 
 List<String> testedGradleVersions = []
+testedGradleVersions << "5.3.1"
 testedGradleVersions << "5.1"
 testedGradleVersions << "5.0"
 testedGradleVersions << "4.10.3"
-testedGradleVersions << "4.0.2"
-testedGradleVersions << "3.5.1"
+testedGradleVersions << "4.6"
 
 testedGradleVersions.each { version ->
   project.tasks.create("test_" + version.replaceAll("[^a-zA-Z0-9]", "_"), Test).with {
