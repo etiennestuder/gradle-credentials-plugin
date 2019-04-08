@@ -3,6 +3,7 @@ package nu.studer.gradle.credentials
 import org.gradle.testkit.runner.TaskOutcome
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
+import spock.lang.Requires
 import spock.lang.Unroll
 
 @Unroll
@@ -167,6 +168,40 @@ task printValue {
     then:
     result.task(':printValue').outcome == TaskOutcome.SUCCESS
     result.output.contains('value: someValue')
+  }
+
+  @Requires( { sys["testContext.gradleVersion"]?.startsWith("5") })
+  void "can apply plugin in settings.gradle"() {
+    given:
+    buildFile << """
+plugins {
+    id 'nu.studer.credentials'
+}
+"""
+
+    expect:
+    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
+
+    when:
+    def pluginClasspath = getClass().classLoader.getResource("plugin-classpath.txt").readLines().
+            collect { it.replace('\\', '\\\\') }.collect { "'$it'" }.join(", ")
+
+    settingsFile << """
+buildscript {
+    dependencies {
+        classpath files($pluginClasspath)
+    }
+}
+
+apply plugin: 'nu.studer.credentials'
+
+assert credentials.someKey == 'someValue'
+"""
+
+    println settingsFile.text
+
+    then:
+    runWithArguments()
   }
 
   private File buildFile() {
