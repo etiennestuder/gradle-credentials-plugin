@@ -10,6 +10,12 @@ credentials using password-based encryption (PBE).
 
 The credentials plugin is hosted at [Bintray's JCenter](https://bintray.com/etienne/gradle-plugins/gradle-credentials-plugin).
 
+## Build scan
+
+Recent build scan: https://scans.gradle.com/s/6tczrjm7yzukc
+
+Find out more about build scans for Gradle and Maven at https://scans.gradle.com.
+
 # Goals
 
 One typical use case of the 'gradle.properties' file in the Gradle user home directory is
