@@ -7,6 +7,7 @@ import nu.studer.gradle.util.AlwaysFalseSpec;
 import nu.studer.gradle.util.MD5;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.util.GradleVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +43,11 @@ public class CredentialsPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
+        // abort if old Gradle version is not supported
+        if (GradleVersion.current().getBaseVersion().compareTo(GradleVersion.version("5.0")) < 0) {
+            throw new IllegalStateException("This version of the credentials plugin is not compatible with Gradle < 5.0");
+        }
+
         // get the passphrase from the project properties, otherwise use the default passphrase
         String passphrase = getProjectProperty(CREDENTIALS_PASSPHRASE_PROPERTY, DEFAULT_PASSPHRASE, project);
 
