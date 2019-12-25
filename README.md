@@ -12,7 +12,7 @@ The credentials plugin is hosted at [Bintray's JCenter](https://bintray.com/etie
 
 ## Build scan
 
-Recent build scan: https://scans.gradle.com/s/whfhcbnksi5r2
+Recent build scan: https://scans.gradle.com/s/vzlk2e4dnfzge
 
 Find out more about build scans for Gradle and Maven at https://scans.gradle.com.
 
