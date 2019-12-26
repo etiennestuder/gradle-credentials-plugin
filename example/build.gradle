@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath "nu.studer:gradle-credentials-plugin:1.0.7"
+    classpath 'nu.studer:gradle-credentials-plugin:2.0'
   }
 }
 
