@@ -5,13 +5,20 @@ import nu.studer.gradle.credentials.domain.CredentialsEncryptor;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
 import nu.studer.gradle.util.AlwaysFalseSpec;
 import nu.studer.gradle.util.MD5;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.initialization.Settings;
+import org.gradle.api.invocation.Gradle;
+import org.gradle.api.plugins.ExtensionAware;
+import org.gradle.api.plugins.ExtraPropertiesExtension;
+import org.gradle.api.tasks.TaskContainer;
 import org.gradle.util.GradleVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.function.Function;
 
 /**
  * Plugin to store and access encrypted credentials using password-based encryption (PBE). The credentials are stored in the Gradle home directory in a separate file for each
@@ -24,7 +31,7 @@ import java.io.File;
  * <p>
  * The plugin adds a task to add credentials and a task to remove credentials.
  */
-public class CredentialsPlugin implements Plugin<Project> {
+public class CredentialsPlugin implements Plugin<ExtensionAware> {
 
     public static final String DEFAULT_PASSPHRASE_CREDENTIALS_FILE = "gradle.encrypted.properties";
     public static final String DEFAULT_PASSPHRASE = ">>Default passphrase to encrypt passwords!<<";
@@ -39,17 +46,34 @@ public class CredentialsPlugin implements Plugin<Project> {
     public static final String ADD_CREDENTIALS_TASK_NAME = "addCredentials";
     public static final String REMOVE_CREDENTIALS_TASK_NAME = "removeCredentials";
 
+    private static final Action<Pair> NOOP = (Pair p) -> {
+    };
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialsPlugin.class);
 
+    @SuppressWarnings("NullableProblems")
     @Override
-    public void apply(Project project) {
+    public void apply(ExtensionAware extension) {
         // abort if old Gradle version is not supported
         if (GradleVersion.current().getBaseVersion().compareTo(GradleVersion.version("5.0")) < 0) {
             throw new IllegalStateException("This version of the credentials plugin is not compatible with Gradle < 5.0");
         }
 
+        // handle plugin application to settings file and project file
+        if (extension instanceof Settings) {
+            Settings settings = (Settings) extension;
+            init(settings.getGradle(), settings, (String loc) -> settings.getSettingsDir().toPath().resolve(loc).toFile(), NOOP);
+        } else if (extension instanceof Project) {
+            Project project = (Project) extension;
+            init(project.getGradle(), project, project::file, (Pair creds) -> addTasks(creds, project.getTasks()));
+        } else {
+            throw new IllegalStateException("The credentials plugin can only be applied to Settings and Project instances");
+        }
+    }
+
+    private void init(Gradle gradle, ExtensionAware extensionAware, Function<String, File> locationResolver, Action<Pair> customizations) {
         // get the passphrase from the project properties, otherwise use the default passphrase
-        String passphrase = getProjectProperty(CREDENTIALS_PASSPHRASE_PROPERTY, DEFAULT_PASSPHRASE, project);
+        String passphrase = getStringProperty(CREDENTIALS_PASSPHRASE_PROPERTY, DEFAULT_PASSPHRASE, extensionAware);
 
         // derive the name of the credentials file from the passphrase
         String credentialsFileName = deriveFileNameFromPassphrase(passphrase);
@@ -58,18 +82,36 @@ public class CredentialsPlugin implements Plugin<Project> {
         CredentialsEncryptor credentialsEncryptor = CredentialsEncryptor.withPassphrase(passphrase.toCharArray());
 
         // create a credentials persistence manager that operates on the credentials file, possibly located in a user-configured folder
-        String customCredentialsLocation = getProjectProperty(CREDENTIALS_LOCATION_PROPERTY, null, project);
-        File credentialsLocationDir = customCredentialsLocation != null ? project.file(customCredentialsLocation) : project.getGradle().getGradleUserHomeDir();
+        String credentialsLocation = getStringProperty(CREDENTIALS_LOCATION_PROPERTY, null, extensionAware);
+        File credentialsLocationDir = credentialsLocation != null ? locationResolver.apply(credentialsLocation) : gradle.getGradleUserHomeDir();
         File credentialsFile = new File(credentialsLocationDir, credentialsFileName);
         CredentialsPersistenceManager credentialsPersistenceManager = new CredentialsPersistenceManager(credentialsFile);
 
         // add a new 'credentials' property and transiently store the persisted credentials for access in build scripts
         CredentialsContainer credentialsContainer = new CredentialsContainer(credentialsEncryptor, credentialsPersistenceManager.readCredentials());
-        project.getExtensions().getExtraProperties().set(CREDENTIALS_CONTAINER_PROPERTY, credentialsContainer);
+        setProperty(CREDENTIALS_CONTAINER_PROPERTY, credentialsContainer, extensionAware);
         LOGGER.debug("Registered property '" + CREDENTIALS_CONTAINER_PROPERTY + "'");
 
+        // allow further ExtensionAware-specific customization
+        customizations.execute(new Pair(credentialsEncryptor, credentialsPersistenceManager));
+    }
+
+    private String getStringProperty(String key, String defaultValue, ExtensionAware extensionAware) {
+        ExtraPropertiesExtension properties = extensionAware.getExtensions().getExtraProperties();
+        return properties.has(key) ? (String) properties.get(key) : defaultValue;
+    }
+
+    private void setProperty(String key, Object value, ExtensionAware extensionAware) {
+        ExtraPropertiesExtension properties = extensionAware.getExtensions().getExtraProperties();
+        properties.set(key, value);
+    }
+
+    private void addTasks(Pair result, TaskContainer tasks) {
+        CredentialsEncryptor credentialsEncryptor = result.credentialsEncryptor;
+        CredentialsPersistenceManager credentialsPersistenceManager = result.credentialsPersistenceManager;
+
         // add a task instance that stores new credentials through the credentials persistence manager
-        AddCredentialsTask addCredentials = project.getTasks().create(ADD_CREDENTIALS_TASK_NAME, AddCredentialsTask.class);
+        AddCredentialsTask addCredentials = tasks.create(ADD_CREDENTIALS_TASK_NAME, AddCredentialsTask.class);
         addCredentials.setDescription("Adds the credentials specified through the project properties 'credentialsKey' and 'credentialsValue'.");
         addCredentials.setGroup("Credentials");
         addCredentials.setCredentialsEncryptor(credentialsEncryptor);
@@ -78,7 +120,7 @@ public class CredentialsPlugin implements Plugin<Project> {
         LOGGER.debug(String.format("Registered task '%s'", addCredentials.getName()));
 
         // add a task instance that removes some credentials through the credentials persistence manager
-        RemoveCredentialsTask removeCredentials = project.getTasks().create(REMOVE_CREDENTIALS_TASK_NAME, RemoveCredentialsTask.class);
+        RemoveCredentialsTask removeCredentials = tasks.create(REMOVE_CREDENTIALS_TASK_NAME, RemoveCredentialsTask.class);
         removeCredentials.setDescription("Removes the credentials specified through the project property 'credentialsKey'.");
         removeCredentials.setGroup("Credentials");
         removeCredentials.setCredentialsPersistenceManager(credentialsPersistenceManager);
@@ -99,8 +141,16 @@ public class CredentialsPlugin implements Plugin<Project> {
         return credentialsFileName;
     }
 
-    private String getProjectProperty(String key, String defaultValue, Project project) {
-        return project.hasProperty(key) ? (String) project.property(key) : defaultValue;
+    private static final class Pair {
+
+        private final CredentialsEncryptor credentialsEncryptor;
+        private final CredentialsPersistenceManager credentialsPersistenceManager;
+
+        private Pair(CredentialsEncryptor credentialsEncryptor, CredentialsPersistenceManager credentialsPersistenceManager) {
+            this.credentialsEncryptor = credentialsEncryptor;
+            this.credentialsPersistenceManager = credentialsPersistenceManager;
+        }
+
     }
 
 }
