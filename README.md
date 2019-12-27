@@ -57,7 +57,7 @@ a convenient way to avoid having to store credentials in plain text.
 
 ## Apply credentials plugin
 
-Apply the `nu.studer.credentials` plugin to your Gradle plugin project.
+Apply the `nu.studer.credentials` plugin to your Gradle project.
 
 ```groovy
 plugins {
