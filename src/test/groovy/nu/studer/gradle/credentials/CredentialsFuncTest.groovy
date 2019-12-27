@@ -160,17 +160,50 @@ task printValue {
 }
 """
 
-    when:
-    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
-    def result = runWithArguments('printValue', '-i')
+      when:
+      runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
+      def result = runWithArguments('printValue', '-i')
 
-    then:
-    result.task(':printValue').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: someValue')
+      then:
+      result.task(':printValue').outcome == TaskOutcome.SUCCESS
+      result.output.contains('value: someValue')
   }
 
-  private File buildFile() {
-    buildFile << """
+    void "can apply plugin and access credentials in settings.gradle"() {
+        given:
+        buildFile << """
+plugins {
+    id 'nu.studer.credentials'
+}
+"""
+
+        and:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
+
+        when:
+        def pluginClasspath = getClass().classLoader.getResource('plugin-classpath.txt').readLines().
+            collect { it.replace('\\', '\\\\') }.collect { "'$it'" }.join(",")
+
+        settingsFile << """
+buildscript {
+    dependencies {
+        classpath files($pluginClasspath)
+    }
+}
+
+apply plugin: 'nu.studer.credentials'
+
+assert credentials.someKey == 'someValue'
+"""
+
+        println settingsFile.text
+
+        then:
+        runWithArguments()
+    }
+
+    private File buildFile() {
+        buildFile << """
 plugins {
     id 'nu.studer.credentials'
 }
