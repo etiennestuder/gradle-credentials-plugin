@@ -8,139 +8,139 @@ import spock.lang.Unroll
 @Unroll
 class CredentialsFuncTest extends BaseFuncTest {
 
-  @Rule
-  TemporaryFolder tempFolder
+    @Rule
+    TemporaryFolder tempFolder
 
-  void setup() {
-    new File(testKitDir, 'gradle.encrypted.properties').delete()
-  }
+    void setup() {
+        new File(testKitDir, 'gradle.encrypted.properties').delete()
+    }
 
-  void "cannot add credentials with null key"() {
-    given:
-    buildFile()
+    void "cannot add credentials with null key"() {
+        given:
+        buildFile()
 
-    when:
-    def result = runAndFailWithArguments('addCredentials', '--value', 'someValue', '-i')
+        when:
+        def result = runAndFailWithArguments('addCredentials', '--value', 'someValue', '-i')
 
-    then:
-    result.task(':addCredentials').outcome == TaskOutcome.FAILED
-    result.output.contains('Credentials key must not be null')
-  }
+        then:
+        result.task(':addCredentials').outcome == TaskOutcome.FAILED
+        result.output.contains('Credentials key must not be null')
+    }
 
-  void "cannot add credentials with null value"() {
-    given:
-    buildFile()
+    void "cannot add credentials with null value"() {
+        given:
+        buildFile()
 
-    when:
-    def result = runAndFailWithArguments('addCredentials', '--key', 'someKey', '-i')
+        when:
+        def result = runAndFailWithArguments('addCredentials', '--key', 'someKey', '-i')
 
-    then:
-    result.task(':addCredentials').outcome == TaskOutcome.FAILED
-    result.output.contains('Credentials value must not be null')
-  }
+        then:
+        result.task(':addCredentials').outcome == TaskOutcome.FAILED
+        result.output.contains('Credentials value must not be null')
+    }
 
-  void "cannot access credentials added in same build execution"() {
-    given:
-    buildFile()
+    void "cannot access credentials added in same build execution"() {
+        given:
+        buildFile()
 
-    when:
-    def result = runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', 'printValue', '-i')
+        when:
+        def result = runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', 'printValue', '-i')
 
-    then:
-    result.task(':addCredentials').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: null')
-  }
+        then:
+        result.task(':addCredentials').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: null')
+    }
 
-  void "can access credentials added in previous build execution"() {
-    given:
-    buildFile()
+    void "can access credentials added in previous build execution"() {
+        given:
+        buildFile()
 
-    when:
-    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
-    def result = runWithArguments('printValue', '-i')
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
+        def result = runWithArguments('printValue', '-i')
 
-    then:
-    result.task(':printValue').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: someValue')
-  }
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: someValue')
+    }
 
-  void "can access credentials with dollar character in value"() {
-    given:
-    buildFile()
+    void "can access credentials with dollar character in value"() {
+        given:
+        buildFile()
 
-    when:
-    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'before$after', '-i')
-    def result = runWithArguments('printValue', '-i')
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'before$after', '-i')
+        def result = runWithArguments('printValue', '-i')
 
-    then:
-    result.task(':printValue').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: before$after')
-  }
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: before$after')
+    }
 
-  void "can access credentials added with custom passphrase"() {
-    given:
-    buildFile()
+    void "can access credentials added with custom passphrase"() {
+        given:
+        buildFile()
 
-    when:
-    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=xyz', '-i')
-    def result = runWithArguments('printValue', '-PcredentialsPassphrase=xyz', '-i')
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=xyz', '-i')
+        def result = runWithArguments('printValue', '-PcredentialsPassphrase=xyz', '-i')
 
-    then:
-    result.task(':printValue').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: someValue')
-  }
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: someValue')
+    }
 
-  void "cannot access credentials used with different passphrase from when added with custom passphrase"() {
-    given:
-    buildFile()
+    void "cannot access credentials used with different passphrase from when added with custom passphrase"() {
+        given:
+        buildFile()
 
-    when:
-    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=xyz', '-i')
-    def result = runWithArguments('printValue', '-PcredentialsPassphrase=abz', '-i')
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=xyz', '-i')
+        def result = runWithArguments('printValue', '-PcredentialsPassphrase=abz', '-i')
 
-    then:
-    result.task(':printValue').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: null')
-  }
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: null')
+    }
 
-  void "cannot access credentials used with different passphrase from when added with default passphrase"() {
-    given:
-    buildFile()
+    void "cannot access credentials used with different passphrase from when added with default passphrase"() {
+        given:
+        buildFile()
 
-    when:
-    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
-    def result = runWithArguments('printValue', '-PcredentialsPassphrase=abz', '-i')
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
+        def result = runWithArguments('printValue', '-PcredentialsPassphrase=abz', '-i')
 
-    then:
-    result.task(':printValue').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: null')
-  }
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: null')
+    }
 
-  void "can configure custom location of password file"() {
-    given:
-    buildFile()
-    def location = tempFolder.newFolder()
+    void "can configure custom location of password file"() {
+        given:
+        buildFile()
+        def location = tempFolder.newFolder()
 
-    when:
-    runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsLocation=' + location.canonicalPath, '-i')
-    def result = runWithArguments('printValue', '-PcredentialsLocation=' + location.canonicalPath, '-i')
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsLocation=' + location.canonicalPath, '-i')
+        def result = runWithArguments('printValue', '-PcredentialsLocation=' + location.canonicalPath, '-i')
 
-    then:
-    result.task(':printValue').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: someValue')
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: someValue')
 
-    when:
-    result = runWithArguments('printValue', '-i')
+        when:
+        result = runWithArguments('printValue', '-i')
 
-    then:
-    result.task(':printValue').outcome == TaskOutcome.SUCCESS
-    result.output.contains('value: null')
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: null')
 
-  }
+    }
 
-  void "can apply plugin in conjunction with the maven publish plugins"() {
-    given:
-    buildFile << """
+    void "can apply plugin in conjunction with the maven publish plugins"() {
+        given:
+        buildFile << """
 plugins {
     id 'nu.studer.credentials'
     id 'maven-publish'
@@ -160,14 +160,14 @@ task printValue {
 }
 """
 
-      when:
-      runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
-      def result = runWithArguments('printValue', '-i')
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
+        def result = runWithArguments('printValue', '-i')
 
-      then:
-      result.task(':printValue').outcome == TaskOutcome.SUCCESS
-      result.output.contains('value: someValue')
-  }
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: someValue')
+    }
 
     void "can apply plugin and access credentials in settings.gradle"() {
         given:
@@ -180,26 +180,33 @@ plugins {
         and:
         runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
 
-        when:
-        def pluginClasspath = getClass().classLoader.getResource('plugin-classpath.txt').readLines().
-            collect { it.replace('\\', '\\\\') }.collect { "'$it'" }.join(",")
-
+        and:
         settingsFile << """
 buildscript {
     dependencies {
-        classpath files($pluginClasspath)
+        classpath files(${implClasspath()})
     }
 }
 
 apply plugin: 'nu.studer.credentials'
 
-assert credentials.someKey == 'someValue'
+String val = credentials.someKey
+println "value: \$val"
 """
 
-        println settingsFile.text
+        when:
+        def result = runWithArguments()
 
         then:
-        runWithArguments()
+        result.output.contains('value: someValue')
+    }
+
+    private def implClasspath() {
+        def properties = new Properties()
+        def resource = getClass().classLoader.getResource('plugin-under-test-metadata.properties')
+        resource.withInputStream { stream -> properties.load(stream) }
+        def implClasspath = properties.get('implementation-classpath')
+        implClasspath.split(File.pathSeparator).collect { it.replace('\\', '\\\\') }.collect { "'$it'" }.join(",")
     }
 
     private File buildFile() {
@@ -215,6 +222,6 @@ task printValue {
   }
 }
 """
-  }
+    }
 
 }

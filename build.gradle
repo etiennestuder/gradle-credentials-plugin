@@ -24,25 +24,6 @@ dependencies {
   }
 }
 
-task createClasspathManifest {
-    def outputDir = file("$buildDir/$name")
-
-    inputs.files(sourceSets.main.runtimeClasspath)
-        .withPropertyName('Plugin runtime classpath')
-        .withNormalizer(ClasspathNormalizer)
-    outputs.dir(outputDir)
-        .withPropertyName('Output directory')
-
-    doLast {
-        outputDir.mkdirs()
-        new File(outputDir, 'plugin-classpath.txt').text = sourceSets.main.runtimeClasspath.join('\n')
-    }
-}
-
-dependencies {
-    testRuntime files(createClasspathManifest)
-}
-
 plugindev {
   pluginDescription 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
   pluginImplementationClass 'nu.studer.gradle.credentials.CredentialsPlugin'
