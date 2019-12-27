@@ -1,10 +1,6 @@
 plugins {
     id 'nu.studer.credentials' version '2.1'
-    id 'base'
 }
-
-group = 'org.example'
-version = '0.0.1'
 
 // read credentials at build time, assuming credentials have already been
 // written to the file system through Gradle task before via
