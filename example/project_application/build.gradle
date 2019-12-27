@@ -1,14 +1,7 @@
-buildscript {
-  repositories {
-    jcenter()
-  }
-  dependencies {
-    classpath 'nu.studer:gradle-credentials-plugin:2.1'
-  }
+plugins {
+    id 'nu.studer.credentials' version '2.1'
+    id 'base'
 }
-
-apply plugin: 'base'
-apply plugin: 'nu.studer.credentials'
 
 group = 'org.example'
 version = '0.0.1'
