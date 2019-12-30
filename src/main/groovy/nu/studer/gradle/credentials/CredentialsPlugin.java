@@ -53,18 +53,18 @@ public class CredentialsPlugin implements Plugin<ExtensionAware> {
 
     @SuppressWarnings("NullableProblems")
     @Override
-    public void apply(ExtensionAware extension) {
+    public void apply(ExtensionAware extensionAware) {
         // abort if old Gradle version is not supported
         if (GradleVersion.current().getBaseVersion().compareTo(GradleVersion.version("5.0")) < 0) {
             throw new IllegalStateException("This version of the credentials plugin is not compatible with Gradle < 5.0");
         }
 
         // handle plugin application to settings file and project file
-        if (extension instanceof Settings) {
-            Settings settings = (Settings) extension;
+        if (extensionAware instanceof Settings) {
+            Settings settings = (Settings) extensionAware;
             init(settings.getGradle(), settings, (String loc) -> settings.getSettingsDir().toPath().resolve(loc).toFile(), NOOP);
-        } else if (extension instanceof Project) {
-            Project project = (Project) extension;
+        } else if (extensionAware instanceof Project) {
+            Project project = (Project) extensionAware;
             init(project.getGradle(), project, project::file, (Pair creds) -> addTasks(creds, project.getTasks()));
         } else {
             throw new IllegalStateException("The credentials plugin can only be applied to Settings and Project instances");
