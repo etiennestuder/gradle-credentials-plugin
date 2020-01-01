@@ -1,6 +1,7 @@
 package nu.studer.gradle.credentials
 
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.testkit.runner.internal.PluginUnderTestMetadataReading
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Unroll
@@ -201,12 +202,8 @@ println "value: \$val"
         result.output.contains('value: someValue')
     }
 
-    private def implClasspath() {
-        def properties = new Properties()
-        def resource = getClass().classLoader.getResource('plugin-under-test-metadata.properties')
-        resource.withInputStream { stream -> properties.load(stream) }
-        def implClasspath = properties.get('implementation-classpath')
-        implClasspath.split(File.pathSeparator).collect { it.replace('\\', '\\\\') }.collect { "'$it'" }.join(",")
+    private static def implClasspath() {
+        PluginUnderTestMetadataReading.readImplementationClasspath().collect { it.absolutePath.replace('\\', '\\\\') }.collect { "'$it'" }.join(",")
     }
 
     private File buildFile() {
