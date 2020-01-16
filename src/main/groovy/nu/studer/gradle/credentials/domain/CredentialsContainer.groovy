@@ -1,5 +1,6 @@
 package nu.studer.gradle.credentials.domain
 
+
 import nu.studer.java.util.OrderedProperties
 
 /**
@@ -16,7 +17,9 @@ final class CredentialsContainer {
   }
 
   def propertyMissing(String name) {
-    if (credentials.containsProperty(name)) {
+    if (credentials.containsProperty(credentialsEncryptor.hash(name))) {
+      credentialsEncryptor.decrypt(credentials.getProperty(credentialsEncryptor.hash(name)))
+    } else if (credentials.containsProperty(name)) {
       credentialsEncryptor.decrypt(credentials.getProperty(name))
     } else {
       null
@@ -24,7 +27,7 @@ final class CredentialsContainer {
   }
 
   def propertyMissing(String name, value) {
-    credentials.setProperty(name, credentialsEncryptor.encrypt(value as String))
+    credentials.setProperty(credentialsEncryptor.hash(name), credentialsEncryptor.encrypt(value as String))
   }
 
 }

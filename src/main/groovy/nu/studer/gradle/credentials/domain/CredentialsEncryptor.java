@@ -3,13 +3,13 @@ package nu.studer.gradle.credentials.domain;
 /**
  * Encrypts/decrypts credentials through password-based encryption.
  *
- * @see Encryption
+ * @see Crypto.Encryption
  */
 public final class CredentialsEncryptor {
 
-    private final Encryption encryption;
+    private final Crypto.Encryption encryption;
 
-    private CredentialsEncryptor(Encryption encryption) {
+    private CredentialsEncryptor(Crypto.Encryption encryption) {
         this.encryption = encryption;
     }
 
@@ -24,6 +24,17 @@ public final class CredentialsEncryptor {
     }
 
     /**
+     * Creates a new instance that will use the given passphrase for all encryption/decryption activities.
+     *
+     * @param passphrase the passphrase to encrypt/decrypt the credentials with
+     * @return the new instance
+     */
+    public static CredentialsEncryptor withPassphrase(char[] passphrase) {
+        Crypto.Encryption encryption = Crypto.createEncryption(passphrase);
+        return new CredentialsEncryptor(encryption);
+    }
+
+    /**
      * Decrypts the given string.
      *
      * @param string the string to decrypt
@@ -34,14 +45,13 @@ public final class CredentialsEncryptor {
     }
 
     /**
-     * Creates a new instance that will use the given passphrase for all encryption/decryption activities.
+     * Hashes the input key based on the passphrase given when this instance was created.
      *
-     * @param passphrase the passphrase to encrypt/decrypt the credentials with
-     * @return the new instance
+     * @param key the gradle credentials properties key to hash
+     * @return a hash of the input key and the passphrase used to construct this instance
      */
-    public static CredentialsEncryptor withPassphrase(char[] passphrase) {
-        Encryption encryption = Encryption.createEncryption(passphrase);
-        return new CredentialsEncryptor(encryption);
+    public String hash(String key) {
+        return key != null ? encryption.hash(key) : null;
     }
 
 }

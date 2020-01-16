@@ -63,7 +63,7 @@ Apply the `nu.studer.credentials` plugin to your Gradle project.
 
 ```groovy
 plugins {
-  id 'nu.studer.credentials' version '2.1'
+  id 'nu.studer.credentials' version '2.2'
 }
 ```
 
@@ -80,7 +80,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'nu.studer:gradle-credentials-plugin:2.1'
+        classpath 'nu.studer:gradle-credentials-plugin:2.2'
     }
 }
 
@@ -95,17 +95,25 @@ You can store new credentials or update existing credentials through the `addCre
 the credentials key and value through the task options `--key` and `--value`. The
 credentials are stored in the _GRADLE_USER_HOME/gradle.encrypted.properties_.
 
-    gradle addCredentials --key someKey --value someValue
+    gradle addCredentials --key someKey --value someValue [--env someEnvironment --loc someDirectoryLocation --pass somePassphrase]
 
-Optionally, pass along a custom passphrase through the `credentialsPassphrase` project property. The
-credentials are stored in the passphrase-specific _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the
-_MD5HASH_ is calculated from the specified passphrase.
+Optionally, pass along a custom passphrase through the `credentialsPassphrase` and/or a `credentialsLocation` and/or a `credentialsEnv` project property. The
+credentials are stored in the env-passphrase-specific _GRADLE_USER_HOME/gradle.env_ENVHASH.MD5HASH.encrypted.properties_ where the
+_ENVHASH_ is calculated from the specified env variable and _MD5HASH_ is calculated from the specified passphrase.
 
     gradle addCredentials --key someKey --value someValue -PcredentialsPassphrase=mySecretPassPhrase
+
+or
+
+    gradle addCredentials --key someKey --value someValue --pass mySecretPassPhrase
 
 Optionally, pass along a custom directory location of the credentials file through the `credentialsLocation` project property.
 
     gradle addCredentials --key someKey --value someValue -PcredentialsLocation=/some/directory
+
+or
+
+    gradle addCredentials --key someKey --value someValue --loc /some/directory
 
 ### Remove encrypted credentials
 
@@ -125,6 +133,16 @@ Optionally, pass along a custom directory location of the credentials file throu
 
     gradle addCredentials --key someKey --value someValue -PcredentialsLocation=/some/directory
 
+You can also pass the `credentialsLocation` to the addCredentials, removeCredentials, and showCredentials tasks through the `--loc` task parameter.
+
+    gradle addCredentials --key someKey --value someValue --loc /some/directory
+
+The property resolution order is: `--<option>` will override `-P<property>`. This follows the most specific scope wins rule.
+
+    gradle addCredentials --key someKey --value someValue --loc /some/directory -PcredentialsLocation=/other/directory
+
+For the above case, `--loc` will override `-PcredentialsLocation=/other/directory`
+
 ## Access credentials in build
 
 ### Get credentials from within a build
@@ -134,18 +152,32 @@ credentials are decrypted as they are accessed.
 
 ```groovy
 String accountPassword = credentials.someAccountName
+println "Account Password: ${accountPassword}"
 ```
 
-If no explicit passphrase is passed when starting the build, the `credentials` container is initialized
+If no explicit passphrase or environment is passed when starting the build, the `credentials` container is initialized
 with all credentials persisted in the _GRADLE_USER_HOME/gradle.encrypted.properties_.
 
-If a custom passphrase is passed through the `credentialsPassphrase` project property when starting the build,
-the `credentials` container is initialized with all credentials persisted in the passphrase-specific
-_GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the _MD5HASH_ is calculated from the
-specified passphrase.
+If a custom passphrase is passed through the `credentialsPassphrase` and/or `credentialsEnv` project property when starting the build,
+or through the `--pass` and/or `--env` task properties for AddCredentials the `credentials` container is initialized with all
+credentials persisted in the env-passphrase-specific _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the _MD5HASH_ is calculated from the
+specified env and passphrase. **NOTE**: The _MD5HASH_ will not collide for empty passphrase or env. In other words:
+
+Scenario 1:
+
+ - env: `someEnv`
+ - passphrase: `null`
+ - MD5HASH: `9bffe66249623f697e8896606c715e2f`
+
+Scenario 2:
+
+ - env: `null`
+ - passphrase: `someEnv`
+ - MD5HASH: `46b13f0c1614e93ccd73aa8c95e41a1d`
 
 If a custom directory location is passed through the `credentialsLocation` project property when starting the build,
-the credentials file will be seeked in that directory.
+the credentials file will be seeked in that directory. If the `--loc` option is passed to `addCredentials`, `removeCredentials`, or `showCredentials` the `--loc` value will override
+the project property `credentialsLocation`.
 
 ### Add credentials ad-hoc from within a build
 
@@ -176,6 +208,7 @@ Both feedback and contributions are very welcome.
 
 + [Myllyenko](https://github.com/Myllyenko) (pr)
 + [aingram](https://github.com/aingram) (pr)
++ [chrismoran-bkt](https://github.com/chrismoran-bkt) (pr)
 
 # License
 

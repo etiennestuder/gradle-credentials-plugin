@@ -3,7 +3,7 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath 'nu.studer:gradle-credentials-plugin:2.1'
+        classpath 'nu.studer:gradle-credentials-plugin:2.2'
     }
 }
 

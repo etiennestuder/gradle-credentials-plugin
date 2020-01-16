@@ -1,5 +1,7 @@
 package nu.studer.gradle.util;
 
+import java.nio.charset.StandardCharsets;
+
 import static org.apache.commons.codec.binary.Hex.encodeHex;
 
 /**
@@ -20,6 +22,10 @@ public final class Base64 {
         return base64Instance().encodeToString(bytes);
     }
 
+    public static String encodeBase64Utf8String(String bytes) {
+        return base64Instance().encodeToString(bytes.getBytes(StandardCharsets.UTF_8));
+    }
+
     /**
      * Decodes the given Base64 string to bytes.
      *
@@ -28,6 +34,10 @@ public final class Base64 {
      */
     public static byte[] decodeBase64(String string) {
         return base64Instance().decode(string);
+    }
+
+    public static String decodeBase64Utf8String(String string) {
+        return new String(base64Instance().decode(string), StandardCharsets.UTF_8);
     }
 
     /**

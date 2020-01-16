@@ -2,14 +2,12 @@ package nu.studer.gradle.credentials.domain;
 
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.UncheckedIOException;
+import org.gradle.api.plugins.ExtensionAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.function.Function;
 
 /**
  * Manages the storage and retrieval of encrypted credentials.
@@ -19,13 +17,32 @@ public final class CredentialsPersistenceManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialsPersistenceManager.class);
 
     private final File credentialsFile;
+    private final ExtensionAware extensionAware;
+    private final Function<String, File> locationResolver;
 
-    public CredentialsPersistenceManager(File credentialsFile) {
-        this.credentialsFile = credentialsFile;
+    public CredentialsPersistenceManager(String credentialsFileName, String location, ExtensionAware extensionAware, Function<String, File> locationResolver) {
+        this.extensionAware = extensionAware;
+        this.locationResolver = locationResolver;
+        File credentialsLocationDir = locationResolver.apply(location);
+        this.credentialsFile = new File(credentialsLocationDir, credentialsFileName);
     }
 
-    public File getCredentialsFile() {
-        return new File(credentialsFile.toURI());
+    public static CredentialsPersistenceManager fromCredentialsPersistenceManager(String credentialsFileName, String loc, CredentialsPersistenceManager originalManager) {
+        return new CredentialsPersistenceManager(credentialsFileName, loc, originalManager.extensionAware, originalManager.locationResolver);
+    }
+
+    private static void loadProperties(OrderedProperties properties, File file) {
+        try {
+            try (FileInputStream inputStream = new FileInputStream(file)) {
+                loadProperties(properties, inputStream);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public ExtensionAware getExtensionAware() {
+        return this.extensionAware;
     }
 
     public OrderedProperties readCredentials() {
@@ -50,17 +67,8 @@ public final class CredentialsPersistenceManager {
         saveProperties(credentials, file);
     }
 
-    private static void loadProperties(OrderedProperties properties, File file) {
-        try {
-            FileInputStream inputStream = new FileInputStream(file);
-            try {
-                loadProperties(properties, inputStream);
-            } finally {
-                inputStream.close();
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    public File getCredentialsFile() {
+        return this.credentialsFile;
     }
 
     private static void loadProperties(OrderedProperties properties, InputStream stream) {
