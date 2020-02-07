@@ -1,8 +1,8 @@
 plugins {
-  id 'com.gradle.build-scan' version '3.1.1'
-  id 'nu.studer.plugindev' version '1.0.12'
-  id 'nu.studer.credentials' version '2.1'
-  id 'groovy'
+    id 'com.gradle.build-scan' version '3.1.1'
+    id 'nu.studer.plugindev' version '1.0.12'
+    id 'nu.studer.credentials' version '2.1'
+    id 'groovy'
 }
 
 group = 'nu.studer'
@@ -16,41 +16,41 @@ buildScan {
 }
 
 dependencies {
-  compile "nu.studer:java-ordered-properties:1.0.2"
-  compile "commons-codec:commons-codec:1.13"
+    implementation "nu.studer:java-ordered-properties:1.0.2"
+    implementation "commons-codec:commons-codec:1.13"
 
-  testCompile('org.spockframework:spock-core:1.3-groovy-2.5') {
-    exclude module: 'groovy-all'
-  }
+    testImplementation('org.spockframework:spock-core:1.3-groovy-2.5') {
+        exclude module: 'groovy-all'
+    }
 }
 
 plugindev {
-  pluginDescription 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
-  pluginImplementationClass 'nu.studer.gradle.credentials.CredentialsPlugin'
-  pluginLicenses 'Apache-2.0'
-  pluginTags 'gradle', 'plugin', 'credentials'
-  authorId 'etiennestuder'
-  authorName 'Etienne Studer'
-  authorEmail 'etienne@studer.nu'
-  projectUrl 'https://github.com/etiennestuder/gradle-credentials-plugin'
-  projectInceptionYear '2014'
-  done()
+    pluginDescription 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
+    pluginImplementationClass 'nu.studer.gradle.credentials.CredentialsPlugin'
+    pluginLicenses 'Apache-2.0'
+    pluginTags 'gradle', 'plugin', 'credentials'
+    authorId 'etiennestuder'
+    authorName 'Etienne Studer'
+    authorEmail 'etienne@studer.nu'
+    projectUrl 'https://github.com/etiennestuder/gradle-credentials-plugin'
+    projectInceptionYear '2014'
+    done()
 }
 
 bintray {
-  user = credentials.BINTRAY_USER
-  key = credentials.BINTRAY_API_KEY
-  pkg.repo = 'gradle-plugins'
-  dryRun = false
+    user = credentials.BINTRAY_USER
+    key = credentials.BINTRAY_API_KEY
+    pkg.repo = 'gradle-plugins'
+    dryRun = false
 }
 
 test {
-  maxParallelForks = 2
+    maxParallelForks = 2
 }
 
 def testAll = tasks.create('testAll') {
-  description = 'Runs the Gradle cross-version tests.'
-  group = 'Verification'
+    description = 'Runs the Gradle cross-version tests.'
+    group = 'Verification'
 }
 
 List<String> testedGradleVersions = []
@@ -59,8 +59,8 @@ testedGradleVersions << "5.6.4"
 testedGradleVersions << "5.0"
 
 testedGradleVersions.each { version ->
-  project.tasks.create("test_" + version.replaceAll("[^a-zA-Z0-9]", "_"), Test).with {
-    systemProperty 'testContext.gradleVersion', version
-    testAll.dependsOn(it)
-  }
+    project.tasks.create("test_" + version.replaceAll("[^a-zA-Z0-9]", "_"), Test).with {
+        systemProperty 'testContext.gradleVersion', version
+        testAll.dependsOn(it)
+    }
 }
