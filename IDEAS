@@ -1,0 +1,38 @@
+* Integrate with Apple OSX Keychain.
+
+build.gradle:
+dependencies {
+  implementation "pt.davidafsilva.apple:jkeychain:1.0.0"
+}
+
+Example.java:
+package nu.studer.gradle.credentials;
+
+import pt.davidafsilva.apple.OSXKeychain;
+import pt.davidafsilva.apple.OSXKeychainException;
+
+import java.util.Optional;
+
+public final class Example {
+
+    private static final String SERVICE_NAME = "myService";
+
+    public static void main(String[] args) {
+        String accountName = "myName";
+
+        try {
+            final OSXKeychain keychain = OSXKeychain.getInstance();
+            final Optional<String> mySecret = keychain.findGenericPassword(SERVICE_NAME, accountName);
+            if (mySecret.isPresent()) {
+                System.out.println("Passwd: " + mySecret.get());
+                return;
+            } else {
+                System.out.println("Passwd not present");
+                keychain.addGenericPassword(SERVICE_NAME, accountName, "myPassword123!");
+            }
+        } catch (OSXKeychainException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
