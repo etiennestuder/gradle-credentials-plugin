@@ -29,6 +29,11 @@ dependencies {
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.6.2'
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 plugindev {
     pluginDescription 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
     pluginImplementationClass 'nu.studer.gradle.credentials.CredentialsPlugin'
