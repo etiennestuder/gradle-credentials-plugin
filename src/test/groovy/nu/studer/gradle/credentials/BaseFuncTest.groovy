@@ -25,22 +25,32 @@ abstract class BaseFuncTest extends Specification {
     }
   }
 
-  @Rule
-  TemporaryFolder tempDir = new TemporaryFolder()
+    @Rule
+    TemporaryFolder tempDir = new TemporaryFolder()
 
-  @Rule
-  TestName testName = new TestName()
+    @Rule
+    TestName testName = new TestName()
 
-  File workspaceDir
-  GradleVersion gradleVersion
+    File workspaceDir
+    GradleVersion gradleVersion
 
-  void setup() {
-    workspaceDir = new File(tempDir.root, testName.methodName)
-    gradleVersion = determineGradleVersion()
+    void setup() {
+        def testFolder = specificationContext.currentIteration.name.replace(':', '.').replace('\'', '')
+        workspaceDir = new File(tempDir.root, testFolder)
+        gradleVersion = determineGradleVersion()
+
+        def localBuildCacheDirectory = new File(workspaceDir, 'local-cache')
+        settingsFile << """
+buildCache {
+  local {
+    directory '${localBuildCacheDirectory.toURI()}'
   }
+}
+        """
+    }
 
-  protected BuildResult runWithArguments(String... args) {
-    GradleRunner.create()
+    protected BuildResult runWithArguments(String... args) {
+        GradleRunner.create()
             .withPluginClasspath()
             .withTestKitDir(testKitDir)
             .withProjectDir(workspaceDir)
@@ -49,7 +59,7 @@ abstract class BaseFuncTest extends Specification {
             .withDebug(isDebuggerAttached())
             .forwardOutput()
             .build()
-  }
+    }
 
   protected BuildResult runAndFailWithArguments(String... args) {
     GradleRunner.create()
