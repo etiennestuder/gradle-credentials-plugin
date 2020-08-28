@@ -1,3 +1,21 @@
+plugins {
+    id 'com.gradle.enterprise' version '3.4.1'
+}
+
+gradleEnterprise {
+    buildScan {
+        def acceptTOSProp = 'gradle-credentials-plugin.acceptGradleTOS'
+        if (settings.hasProperty(acceptTOSProp) && Boolean.valueOf(settings.getProperty(acceptTOSProp))) {
+            termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+            termsOfServiceAgree = 'yes'
+        }
+        publishAlways()
+        obfuscation {
+            ipAddresses { addresses -> addresses.collect { address -> '0.0.0.0' } }
+        }
+    }
+}
+
 rootProject.name = 'gradle-credentials-plugin'
 
 buildCache {
