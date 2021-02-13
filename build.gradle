@@ -12,8 +12,8 @@ dependencies {
     implementation 'nu.studer:java-ordered-properties:1.0.4'
     implementation 'commons-codec:commons-codec:1.14'
 
-    testImplementation 'org.spockframework:spock-core:2.0-M3-groovy-2.5'
-    testImplementation 'org.spockframework:spock-junit4:2.0-M3-groovy-2.5'
+    testImplementation 'org.spockframework:spock-core:2.0-M4-groovy-2.5'
+    testImplementation 'org.spockframework:spock-junit4:2.0-M4-groovy-2.5'
 }
 
 java {
