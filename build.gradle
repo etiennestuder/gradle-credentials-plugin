@@ -47,7 +47,7 @@ def testAll = tasks.create('testAll') {
 }
 
 List<String> testedGradleVersions = []
-testedGradleVersions << "6.6.1"
+testedGradleVersions << "6.8.2"
 testedGradleVersions << "6.0.1"
 
 testedGradleVersions.each { version ->
