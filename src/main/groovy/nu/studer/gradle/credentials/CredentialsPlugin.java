@@ -13,6 +13,7 @@ import org.gradle.api.invocation.Gradle;
 import org.gradle.api.plugins.ExtensionAware;
 import org.gradle.api.plugins.ExtraPropertiesExtension;
 import org.gradle.api.tasks.TaskContainer;
+import org.gradle.api.tasks.TaskProvider;
 import org.gradle.util.GradleVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,8 @@ public class CredentialsPlugin implements Plugin<ExtensionAware> {
 
     public static final String ADD_CREDENTIALS_TASK_NAME = "addCredentials";
     public static final String REMOVE_CREDENTIALS_TASK_NAME = "removeCredentials";
+
+    public static final String GROUP = "Credentials";
 
     private static final Action<Pair> NOOP = (Pair p) -> {
     };
@@ -111,21 +114,12 @@ public class CredentialsPlugin implements Plugin<ExtensionAware> {
         CredentialsPersistenceManager credentialsPersistenceManager = result.credentialsPersistenceManager;
 
         // add a task instance that stores new credentials through the credentials persistence manager
-        AddCredentialsTask addCredentials = tasks.create(ADD_CREDENTIALS_TASK_NAME, AddCredentialsTask.class);
-        addCredentials.setDescription("Adds the credentials specified through the project properties 'credentialsKey' and 'credentialsValue'.");
-        addCredentials.setGroup("Credentials");
-        addCredentials.setCredentialsEncryptor(credentialsEncryptor);
-        addCredentials.setCredentialsPersistenceManager(credentialsPersistenceManager);
-        addCredentials.getOutputs().upToDateWhen(AlwaysFalseSpec.INSTANCE);
-        LOGGER.debug(String.format("Registered task '%s'", addCredentials.getName()));
+        TaskProvider<AddCredentialsTask> addCredentialsTaskProvider = tasks.register(ADD_CREDENTIALS_TASK_NAME, AddCredentialsTask.class, credentialsEncryptor, credentialsPersistenceManager);
+        LOGGER.debug(String.format("Registered task '%s'", addCredentialsTaskProvider.getName()));
 
         // add a task instance that removes some credentials through the credentials persistence manager
-        RemoveCredentialsTask removeCredentials = tasks.create(REMOVE_CREDENTIALS_TASK_NAME, RemoveCredentialsTask.class);
-        removeCredentials.setDescription("Removes the credentials specified through the project property 'credentialsKey'.");
-        removeCredentials.setGroup("Credentials");
-        removeCredentials.setCredentialsPersistenceManager(credentialsPersistenceManager);
-        removeCredentials.getOutputs().upToDateWhen(AlwaysFalseSpec.INSTANCE);
-        LOGGER.debug(String.format("Registered task '%s'", removeCredentials.getName()));
+        TaskProvider<RemoveCredentialsTask> removeCredentialsProvider = tasks.register(REMOVE_CREDENTIALS_TASK_NAME, RemoveCredentialsTask.class, credentialsPersistenceManager);
+        LOGGER.debug(String.format("Registered task '%s'", removeCredentialsProvider.getName()));
     }
 
     private String deriveFileNameFromPassphrase(String passphrase) {
