@@ -202,14 +202,14 @@ println "value: \$val"
         result.output.contains('value: someValue')
     }
 
-    void "no tasks are registered eagerly"() {
+    void "tasks are registered lazily"() {
         given:
         buildFile()
         buildFile << """
-tasks.withType(nu.studer.gradle.credentials.AddCredentialsTask).configureEach { 
+tasks.withType(nu.studer.gradle.credentials.AddCredentialsTask).configureEach {
     println "configuring \$it"
 }
-tasks.withType(nu.studer.gradle.credentials.RemoveCredentialsTask).configureEach { 
+tasks.withType(nu.studer.gradle.credentials.RemoveCredentialsTask).configureEach {
     println "configuring \$it"
 }
 """
