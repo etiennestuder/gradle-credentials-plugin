@@ -202,6 +202,26 @@ println "value: \$val"
         result.output.contains('value: someValue')
     }
 
+    void "no tasks are registered eagerly"() {
+        given:
+        buildFile()
+        buildFile << """
+tasks.withType(nu.studer.gradle.credentials.AddCredentialsTask).configureEach { 
+    println "configuring \$it"
+}
+tasks.withType(nu.studer.gradle.credentials.RemoveCredentialsTask).configureEach { 
+    println "configuring \$it"
+}
+"""
+
+        when:
+        def result = runWithArguments('help')
+
+        then:
+        result.task(':help').outcome == TaskOutcome.SUCCESS
+        !result.output.contains('configuring')
+    }
+
     private static def implClasspath() {
         PluginUnderTestMetadataReading.readImplementationClasspath().collect { it.absolutePath.replace('\\', '\\\\') }.collect { "'$it'" }.join(",")
     }

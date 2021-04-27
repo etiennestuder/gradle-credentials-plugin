@@ -2,6 +2,7 @@ package nu.studer.gradle.credentials;
 
 import nu.studer.gradle.credentials.domain.CredentialsEncryptor;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
+import nu.studer.gradle.util.AlwaysFalseSpec;
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Internal;
@@ -11,6 +12,7 @@ import org.gradle.api.tasks.options.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.Arrays;
 
@@ -21,17 +23,16 @@ public class AddCredentialsTask extends DefaultTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentialsTask.class);
 
-    private CredentialsEncryptor credentialsEncryptor;
-    private CredentialsPersistenceManager credentialsPersistenceManager;
+    private final CredentialsEncryptor credentialsEncryptor;
+    private final CredentialsPersistenceManager credentialsPersistenceManager;
     private String key;
     private String value;
 
-    public void setCredentialsEncryptor(CredentialsEncryptor credentialsEncryptor) {
+    @Inject
+    public AddCredentialsTask(CredentialsEncryptor credentialsEncryptor, CredentialsPersistenceManager credentialsPersistenceManager) {
         this.credentialsEncryptor = credentialsEncryptor;
-    }
-
-    public void setCredentialsPersistenceManager(CredentialsPersistenceManager credentialsPersistenceManager) {
         this.credentialsPersistenceManager = credentialsPersistenceManager;
+        getOutputs().upToDateWhen(AlwaysFalseSpec.INSTANCE);
     }
 
     @Option(option = "key", description = "The credentials key.")
@@ -91,4 +92,13 @@ public class AddCredentialsTask extends DefaultTask {
         return (String) getProject().getProperties().get(key);
     }
 
+    @Override
+    public String getDescription() {
+        return "Adds the credentials specified through the project properties 'credentialsKey' and 'credentialsValue'.";
+    }
+
+    @Override
+    public String getGroup() {
+        return CredentialsPlugin.GROUP;
+    }
 }

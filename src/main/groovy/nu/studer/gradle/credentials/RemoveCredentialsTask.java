@@ -1,6 +1,7 @@
 package nu.studer.gradle.credentials;
 
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
+import nu.studer.gradle.util.AlwaysFalseSpec;
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.OutputFile;
@@ -9,6 +10,7 @@ import org.gradle.api.tasks.options.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.File;
 
 /**
@@ -18,11 +20,13 @@ public class RemoveCredentialsTask extends DefaultTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RemoveCredentialsTask.class);
 
-    private CredentialsPersistenceManager credentialsPersistenceManager;
+    private final CredentialsPersistenceManager credentialsPersistenceManager;
     private String key;
 
-    public void setCredentialsPersistenceManager(CredentialsPersistenceManager credentialsPersistenceManager) {
+    @Inject
+    public RemoveCredentialsTask(CredentialsPersistenceManager credentialsPersistenceManager) {
         this.credentialsPersistenceManager = credentialsPersistenceManager;
+        getOutputs().upToDateWhen(AlwaysFalseSpec.INSTANCE);
     }
 
     @Option(option = "key", description = "The credentials key.")
@@ -60,4 +64,13 @@ public class RemoveCredentialsTask extends DefaultTask {
         return (String) getProject().getProperties().get(key);
     }
 
+    @Override
+    public String getDescription() {
+        return "Removes the credentials specified through the project property 'credentialsKey'.";
+    }
+
+    @Override
+    public String getGroup() {
+        return CredentialsPlugin.GROUP;
+    }
 }
