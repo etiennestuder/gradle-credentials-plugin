@@ -12,8 +12,8 @@ dependencies {
     implementation 'nu.studer:java-ordered-properties:1.0.4'
     implementation 'commons-codec:commons-codec:1.15'
 
-    testImplementation('org.spockframework:spock-core:2.0-groovy-3.0')
-    testImplementation 'org.spockframework:spock-junit4:2.0-groovy-3.0'
+    testImplementation('org.spockframework:spock-core:2.0-groovy-2.5')
+    testImplementation 'org.spockframework:spock-junit4:2.0-groovy-2.5'
 }
 
 java {
@@ -43,7 +43,7 @@ List<String> testedGradleVersions = []
 testedGradleVersions << "7.1"
 testedGradleVersions << "7.0.2"
 testedGradleVersions << "6.9"
-//testedGradleVersions << "6.0.1"
+testedGradleVersions << "6.0.1"
 
 testedGradleVersions.each { version ->
     project.tasks.create("test_" + version.replaceAll("[^a-zA-Z0-9]", "_"), Test).with {
