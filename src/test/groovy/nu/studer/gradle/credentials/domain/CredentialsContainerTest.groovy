@@ -1,30 +1,37 @@
 package nu.studer.gradle.credentials.domain
 
 import nu.studer.java.util.OrderedProperties
+import spock.lang.Specification
 
 @SuppressWarnings("GrUnresolvedAccess")
-class CredentialsContainerTest extends GroovyTestCase {
+class CredentialsContainerTest extends Specification {
 
-  void testSetGetCredentials() {
-    def encryptor = CredentialsEncryptor.withPassphrase("somePassphrase".toCharArray());
-    def initialCredentials = new OrderedProperties()
-    def container = new CredentialsContainer(encryptor, initialCredentials)
-    def value = 'someValue'
+    void "testSetGetCredentials"() {
+        given:
+        def encryptor = CredentialsEncryptor.withPassphrase("somePassphrase".toCharArray())
+        def initialCredentials = new OrderedProperties()
+        def container = new CredentialsContainer(encryptor, initialCredentials)
+        def value = 'someValue'
 
-    container.someKey = value
-    def actualValue = container.someKey
+        when:
+        container.someKey = value
+        def actualValue = container.someKey
 
-    assertEquals(value, actualValue)
-  }
+        then:
+        value == actualValue
+    }
 
-  void testGetUnknownPropertyReturnsNull() {
-    def encryptor = CredentialsEncryptor.withPassphrase("somePassphrase".toCharArray());
-    def initialCredentials = new OrderedProperties()
-    def container = new CredentialsContainer(encryptor, initialCredentials)
+    void "testGetUnknownPropertyReturnsNull"() {
+        given:
+        def encryptor = CredentialsEncryptor.withPassphrase("somePassphrase".toCharArray())
+        def initialCredentials = new OrderedProperties()
+        def container = new CredentialsContainer(encryptor, initialCredentials)
 
-    def value = container.someKey
+        when:
+        def value = container.someKey
 
-    assertNull(value)
-  }
+        then:
+        value == null
+    }
 
 }
