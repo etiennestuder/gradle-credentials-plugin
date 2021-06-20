@@ -26,6 +26,8 @@ public class RemoveCredentialsTask extends DefaultTask {
     @Inject
     public RemoveCredentialsTask(CredentialsPersistenceManager credentialsPersistenceManager) {
         this.credentialsPersistenceManager = credentialsPersistenceManager;
+        setDescription("Removes the credentials specified through the project property 'credentialsKey'.");
+        setGroup(CredentialsPlugin.GROUP);
         getOutputs().upToDateWhen(AlwaysFalseSpec.INSTANCE);
     }
 
@@ -64,13 +66,4 @@ public class RemoveCredentialsTask extends DefaultTask {
         return (String) getProject().getProperties().get(key);
     }
 
-    @Override
-    public String getDescription() {
-        return "Removes the credentials specified through the project property 'credentialsKey'.";
-    }
-
-    @Override
-    public String getGroup() {
-        return CredentialsPlugin.GROUP;
-    }
 }

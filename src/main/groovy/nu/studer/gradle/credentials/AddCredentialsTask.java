@@ -32,6 +32,8 @@ public class AddCredentialsTask extends DefaultTask {
     public AddCredentialsTask(CredentialsEncryptor credentialsEncryptor, CredentialsPersistenceManager credentialsPersistenceManager) {
         this.credentialsEncryptor = credentialsEncryptor;
         this.credentialsPersistenceManager = credentialsPersistenceManager;
+        setDescription("Adds the credentials specified through the project properties 'credentialsKey' and 'credentialsValue'.");
+        setGroup(CredentialsPlugin.GROUP);
         getOutputs().upToDateWhen(AlwaysFalseSpec.INSTANCE);
     }
 
@@ -92,13 +94,4 @@ public class AddCredentialsTask extends DefaultTask {
         return (String) getProject().getProperties().get(key);
     }
 
-    @Override
-    public String getDescription() {
-        return "Adds the credentials specified through the project properties 'credentialsKey' and 'credentialsValue'.";
-    }
-
-    @Override
-    public String getGroup() {
-        return CredentialsPlugin.GROUP;
-    }
 }
