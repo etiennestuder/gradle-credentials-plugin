@@ -2,15 +2,14 @@ package nu.studer.gradle.credentials
 
 import org.gradle.testkit.runner.TaskOutcome
 import org.gradle.testkit.runner.internal.PluginUnderTestMetadataReading
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
+import spock.lang.TempDir
 import spock.lang.Unroll
 
 @Unroll
 class CredentialsFuncTest extends BaseFuncTest {
 
-    @Rule
-    TemporaryFolder tempFolder
+    @TempDir
+    File tempFolder
 
     void setup() {
         new File(testKitDir, 'gradle.encrypted.properties').delete()
@@ -120,7 +119,7 @@ class CredentialsFuncTest extends BaseFuncTest {
     void "can configure custom location of password file"() {
         given:
         buildFile()
-        def location = tempFolder.newFolder()
+        def location = tempFolder
 
         when:
         runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsLocation=' + location.canonicalPath, '-i')
