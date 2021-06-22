@@ -4,6 +4,7 @@ import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
 import nu.studer.gradle.util.AlwaysFalseSpec;
 import nu.studer.java.util.OrderedProperties;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
@@ -36,6 +37,7 @@ public class RemoveCredentialsTask extends DefaultTask {
         this.key = key;
     }
 
+    @Internal("Do not annotate as @Input to avoid the key being stored in the task artifact cache")
     public String getCredentialsKey() {
         return key != null ? key : getProjectProperty(CredentialsPlugin.CREDENTIALS_KEY_PROPERTY);
     }
