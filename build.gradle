@@ -1,5 +1,6 @@
 plugins {
-    id 'nu.studer.plugindev' version '2.0'
+    id 'nu.studer.plugindev' version '3.0'
+    id 'com.gradle.plugin-publish' version '0.15.0'
     id 'nu.studer.credentials' version '2.1'
     id 'org.nosphere.gradle.github.actions' version '1.2.0'
     id 'groovy'
@@ -15,22 +16,9 @@ dependencies {
     testImplementation 'org.spockframework:spock-core:2.0-groovy-2.5'
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-plugindev {
-    pluginDescription 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
-    pluginImplementationClass 'nu.studer.gradle.credentials.CredentialsPlugin'
-    pluginLicenses 'Apache-2.0'
-    pluginTags 'gradle', 'plugin', 'credentials'
-    authorId 'etiennestuder'
-    authorName 'Etienne Studer'
-    authorEmail 'etienne@studer.nu'
-    projectUrl 'https://github.com/etiennestuder/gradle-credentials-plugin'
-    projectInceptionYear '2014'
-    done()
+tasks.withType(Test).configureEach {
+    maxParallelForks = 2
+    useJUnitPlatform()
 }
 
 def testAll = tasks.create('testAll') {
@@ -39,10 +27,10 @@ def testAll = tasks.create('testAll') {
 }
 
 List<String> testedGradleVersions = []
-testedGradleVersions << "7.1"
-testedGradleVersions << "7.0.2"
-testedGradleVersions << "6.9"
-testedGradleVersions << "6.0.1"
+testedGradleVersions << '7.1'
+testedGradleVersions << '7.0.2'
+testedGradleVersions << '6.9'
+testedGradleVersions << '6.0.1'
 
 testedGradleVersions.each { version ->
     project.tasks.create("test_" + version.replaceAll("[^a-zA-Z0-9]", "_"), Test).with {
@@ -51,7 +39,29 @@ testedGradleVersions.each { version ->
     }
 }
 
-tasks.withType(Test).configureEach {
-    maxParallelForks = 2
-    useJUnitPlatform()
+gradlePlugin {
+    plugins {
+        pluginDevPlugin {
+            id = 'nu.studer.credentials'
+            implementationClass = 'nu.studer.gradle.credentials.CredentialsPlugin'
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/etiennestuder/gradle-credentials-plugin'
+    vcsUrl = 'https://github.com/etiennestuder/gradle-credentials-plugin'
+    description = 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
+    tags = ['credentials']
+
+    plugins {
+        pluginDevPlugin {
+            displayName = 'gradle-credentials-plugin'
+        }
+    }
+
+    mavenCoordinates {
+        groupId = 'nu.studer'
+        artifactId = 'gradle-credentials-plugin'
+    }
 }
