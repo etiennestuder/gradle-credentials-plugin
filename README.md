@@ -155,8 +155,7 @@ Credentials added ad-hoc during the build are not persisted on the file system.
 # Example
 
 ## Project-application
-The build script of the credentials plugin makes use of itself and serves as a real-world example. You
-can also find a self-contained example build script [here](example/project_application/build.gradle).
+You can find a self-contained example build script [here](example/project_application/build.gradle).
 
 ## Settings-application
 The credentials plugin can also be applied to a Gradle settings file. You
