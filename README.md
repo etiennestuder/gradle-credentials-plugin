@@ -67,28 +67,18 @@ Apply the `nu.studer.credentials` plugin to your Gradle project.
 
 ```groovy
 plugins {
-  id 'nu.studer.credentials' version '2.1'
+    id 'nu.studer.credentials' version '2.2'
 }
 ```
-
-Please refer to the [Gradle DSL PluginDependenciesSpec](http://www.gradle.org/docs/current/dsl/org.gradle.plugin.use.PluginDependenciesSpec.html) to
-understand the behavior and limitations when using the new syntax to declare plugin dependencies.
 
 ### Settings-application
 
 Apply the `nu.studer.credentials` plugin to your Gradle settings file.
 
 ```groovy
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath 'nu.studer:gradle-credentials-plugin:2.1'
-    }
+plugins {
+    id 'nu.studer.credentials' version '2.2'
 }
-
-apply plugin: 'nu.studer.credentials'
 ```
 
 ## Invoke credentials tasks

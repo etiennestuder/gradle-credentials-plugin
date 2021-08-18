@@ -1,5 +1,5 @@
 plugins {
-    id 'nu.studer.credentials' version '2.1'
+    id 'nu.studer.credentials' version '2.2'
 }
 
 // read credentials at build time, assuming credentials have already been

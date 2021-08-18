@@ -1,13 +1,6 @@
-buildscript {
-    repositories {
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath 'nu.studer:gradle-credentials-plugin:2.1'
-    }
+plugins {
+    id 'nu.studer.credentials' version '2.2'
 }
-
-apply plugin: 'nu.studer.credentials'
 
 // read credentials at build time, assuming credentials have already been
 // written to the file system through Gradle task before via
