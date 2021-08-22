@@ -127,28 +127,46 @@ Get the desired credentials from the `credentials` container, available on the p
 credentials are decrypted as they are accessed.
 
 ```groovy
-String accountPassword = credentials.forKey('someAccountName')
+String accountPassword = credentials.forKey('someAccountPassword')
 ```
 
-If no explicit passphrase is passed when starting the build, the `credentials` container is initialized
-with all credentials persisted in the _GRADLE_USER_HOME/gradle.encrypted.properties_.
+If no explicit passphrase is passed when starting the build, the `credentials` container is initialized with all credentials persisted in the _
+GRADLE_USER_HOME/gradle.encrypted.properties_.
 
-If a custom passphrase is passed through the `credentialsPassphrase` project property when starting the build,
-the `credentials` container is initialized with all credentials persisted in the passphrase-specific
-_GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the _MD5HASH_ is calculated from the
-specified passphrase.
+If a custom passphrase is passed through the `credentialsPassphrase` project property when starting the build, the `credentials` container is initialized with all credentials
+persisted in the passphrase-specific
+_GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the _MD5HASH_ is calculated from the specified passphrase.
 
-If a custom directory location is passed through the `credentialsLocation` project property when starting the build,
-the credentials file will be seeked in that directory.
+If a custom directory location is passed through the `credentialsLocation` project property when starting the build, the credentials file will be seeked in that directory.
 
-# Example
+# Compatibility
+
+|Plugin version|Compatible Gradle versions|Support for Gradle Kotlin DSL|Support for Gradle Configuration Cache| Minimum JDK |
+|--------------|---------------------------|----------------------------|--------------------------------------|-------------|
+| 3.0+         | 6.0+, 7.0+                | Yes                        | N/A                                  | 8           |
+| 2.0+         | 6.0+, 7.0+                | No                         | N/A                                  | 8           |
+
+See the [Migration](#migration) section on how to migrate your build from older to newer credentials plugin versions.
+
+# Migration
+
+## Migrating from credentials plugin 2.x to 3.x
+
+When migrating your build from credentials plugin 2.x to 3.x, follow these steps:
+
+- Access the keys via new `credentials.forKey` API. For example, `credentials.forKey('someAccountPassword')` instead of `credentials.someAccountPassword`.
+- Remove all usages of setting credentials in your build at runtime. For example, `credentials.someAccountPassword = 'chocolate'`. Instead, use the `addCredentials` Gradle task to
+  make credentials available to the build.
+
+# Examples
 
 ## Project-application
+
 You can find a self-contained example build script [here](example/project_application/build.gradle).
 
 ## Settings-application
-The credentials plugin can also be applied to a Gradle settings file. You
-can find a self-contained example build script [here](example/settings_application/settings.gradle).
+
+The credentials plugin can also be applied to a Gradle settings file. You can find a self-contained example build script [here](example/settings_application/settings.gradle).
 
 # Feedback and Contributions
 
