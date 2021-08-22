@@ -154,7 +154,7 @@ publishing {
 
 task printValue {
   doLast {
-    String val = credentials.someKey
+    String val = credentials.forKey('someKey')
     println "value: \$val"
   }
 }
@@ -190,7 +190,7 @@ buildscript {
 
 apply plugin: 'nu.studer.credentials'
 
-String val = credentials.someKey
+String val = credentials.forKey('someKey')
 println "value: \$val"
 """
 
@@ -233,7 +233,7 @@ plugins {
 
 task printValue {
   doLast {
-    String val = credentials.someKey
+    String val = credentials.forKey('someKey')
     println "value: \$val"
   }
 }

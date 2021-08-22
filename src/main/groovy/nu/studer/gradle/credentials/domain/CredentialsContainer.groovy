@@ -7,24 +7,20 @@ import nu.studer.java.util.OrderedProperties
  */
 final class CredentialsContainer {
 
-  private final CredentialsEncryptor credentialsEncryptor
-  private final OrderedProperties credentials
+    private final CredentialsEncryptor credentialsEncryptor
+    private final OrderedProperties credentials
 
-  CredentialsContainer(CredentialsEncryptor credentialsEncryptor, OrderedProperties initialCredentials) {
-    this.credentialsEncryptor = credentialsEncryptor
-    this.credentials = OrderedProperties.copyOf(initialCredentials)
-  }
-
-  def propertyMissing(String name) {
-    if (credentials.containsProperty(name)) {
-      credentialsEncryptor.decrypt(credentials.getProperty(name))
-    } else {
-      null
+    CredentialsContainer(CredentialsEncryptor credentialsEncryptor, OrderedProperties initialCredentials) {
+        this.credentialsEncryptor = credentialsEncryptor
+        this.credentials = OrderedProperties.copyOf(initialCredentials)
     }
-  }
 
-  def propertyMissing(String name, value) {
-    credentials.setProperty(name, credentialsEncryptor.encrypt(value as String))
-  }
+    String forKey(String name) {
+        if (credentials.containsProperty(name)) {
+            credentialsEncryptor.decrypt(credentials.getProperty(name))
+        } else {
+            null
+        }
+    }
 
 }
