@@ -3,7 +3,6 @@ package nu.studer.gradle.credentials;
 import nu.studer.gradle.credentials.domain.CredentialsContainer;
 import nu.studer.gradle.credentials.domain.CredentialsEncryptor;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
-import nu.studer.gradle.util.AlwaysFalseSpec;
 import nu.studer.gradle.util.MD5;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
