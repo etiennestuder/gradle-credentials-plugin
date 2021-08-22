@@ -67,7 +67,7 @@ Apply the `nu.studer.credentials` plugin to your Gradle project.
 
 ```groovy
 plugins {
-    id 'nu.studer.credentials' version '2.2'
+    id 'nu.studer.credentials' version '3.0'
 }
 ```
 
@@ -77,7 +77,7 @@ Apply the `nu.studer.credentials` plugin to your Gradle settings file.
 
 ```groovy
 plugins {
-    id 'nu.studer.credentials' version '2.2'
+    id 'nu.studer.credentials' version '3.0'
 }
 ```
 
