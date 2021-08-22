@@ -117,7 +117,7 @@ _MD5HASH_ is calculated from the specified passphrase.
 
 Optionally, pass along a custom directory location of the credentials file through the `credentialsLocation` project property.
 
-    gradle addCredentials --key someKey --value someValue -PcredentialsLocation=/some/directory
+    gradle removeCredentials --key someKey -PcredentialsLocation=/some/directory
 
 ## Access credentials in build
 
@@ -127,7 +127,7 @@ Get the desired credentials from the `credentials` container, available on the p
 credentials are decrypted as they are accessed.
 
 ```groovy
-String accountPassword = credentials.someAccountName
+String accountPassword = credentials.forKey('someAccountName')
 ```
 
 If no explicit passphrase is passed when starting the build, the `credentials` container is initialized
@@ -140,17 +140,6 @@ specified passphrase.
 
 If a custom directory location is passed through the `credentialsLocation` project property when starting the build,
 the credentials file will be seeked in that directory.
-
-### Add credentials ad-hoc from within a build
-
-Set the desired credentials on the `credentials` container, available on the project instance. The
-credentials are encrypted as they are assigned.
-
-```groovy
-credentials.someAccountName = 'verySecret'
-```
-
-Credentials added ad-hoc during the build are not persisted on the file system.
 
 # Example
 
