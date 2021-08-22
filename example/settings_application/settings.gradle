@@ -4,11 +4,6 @@ plugins {
 
 // read credentials at build time, assuming credentials have already been
 // written to the file system through Gradle task before via
-// gradle addCredentials -PcredentialsKey=someAccountUsername -PcredentialsValue=chocolate
-println "Username: " + credentials.someAccountUsername
+// gradle addCredentials -PcredentialsKey=someAccountPassword -PcredentialsValue=chocolate
+println "Password: " + credentials.forKey('someAccountPassword')
 
-// store credentials at build time without persistence to file system
-credentials.someAccountPassword = 'secret!'
-
-// read credentials at build time
-println "Password: " + credentials.someAccountPassword
