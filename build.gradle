@@ -1,5 +1,7 @@
 import org.gradle.util.GradleVersion
 
+import static java.lang.Integer.parseInt
+
 plugins {
     id 'nu.studer.plugindev' version '4.1'
     id 'com.gradle.plugin-publish' version '0.15.0'
@@ -34,15 +36,21 @@ tasks.withType(Test).configureEach {
     maxParallelForks = 1 // there is currently only a single test class
     useJUnitPlatform()
 
+    String testJavaRuntimeVersion = findProperty('testJavaRuntimeVersion') ?: '8'
+    String testGradleVersion = findProperty('testGradleVersion') ?: GradleVersion.current().version
+
     javaLauncher.set(javaToolchains.launcherFor { spec ->
-        String testJavaRuntimeVersion = findProperty('testJavaRuntimeVersion') ?: '8'
         spec.languageVersion.set(JavaLanguageVersion.of(testJavaRuntimeVersion))
-        buildScan.value(identityPath.path + "#jvmVersion", spec.languageVersion.get().asInt() as String)
+        buildScan.value(identityPath.path + "#jvmVersion", testJavaRuntimeVersion)
     } as Provider<? extends JavaLauncher>)
 
-    String testGradleVersion = findProperty('testGradleVersion') ?: GradleVersion.current().version
     systemProperty 'testContext.gradleVersion', testGradleVersion
     buildScan.value(identityPath.path + "#gradleVersion", testGradleVersion)
+
+    def incompatibleJavaVsGradleVersions = parseInt(testJavaRuntimeVersion) >= 16 && parseInt(testGradleVersion.substring(0, testGradleVersion.indexOf('.'))) < 7
+    if (incompatibleJavaVsGradleVersions) {
+        enabled = false
+    }
 }
 
 gradlePlugin {
