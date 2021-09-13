@@ -9,6 +9,7 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
+import org.gradle.work.DisableCachingByDefault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import java.util.Arrays;
 /**
  * Adds/updates the given credentials, specified as project properties.
  */
+@DisableCachingByDefault
 public class AddCredentialsTask extends DefaultTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AddCredentialsTask.class);
