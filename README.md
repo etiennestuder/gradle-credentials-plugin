@@ -12,7 +12,7 @@ gradle-credentials-plugin
 [Gradle](http://www.gradle.org) plugin that allows to store and access encrypted
 credentials using password-based encryption (PBE).
 
-The credentials plugin is hosted at [Gradle Plugin Portal](https://plugins.gradle.org/plugin/nu.studer.credentials).
+The credentials plugin is hosted at the [Gradle Plugin Portal](https://plugins.gradle.org/plugin/nu.studer.credentials).
 
 ## Build scan
 
