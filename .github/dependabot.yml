@@ -6,10 +6,21 @@ registries:
     username: dummy # Required by dependabot
     password: dummy # Required by dependabot
 updates:
-  - package-ecosystem: "gradle"
-    directory: "/"
-    registries:
-      - gradle-plugin-portal
-    schedule:
-      interval: "daily"
-      
+    -   package-ecosystem: "gradle"
+        directory: "/"
+        registries:
+            - gradle-plugin-portal
+        schedule:
+            interval: "daily"
+    -   package-ecosystem: "gradle"
+        directory: "/example/settings_application"
+        registries:
+            - gradle-plugin-portal
+        schedule:
+            interval: "daily"
+    -   package-ecosystem: "gradle"
+        directory: "/example/project_application"
+        registries:
+            - gradle-plugin-portal
+        schedule:
+            interval: "daily"
