@@ -19,17 +19,16 @@ dependencies {
     testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
 tasks.withType(AbstractCompile).configureEach {
     options.compilerArgs <<
         "-Werror" <<
         "-Xlint:all"
-}
-
-tasks.withType(JavaCompile).configureEach {
-    javaCompiler.set(javaToolchains.compilerFor { spec ->
-        spec.languageVersion.set(JavaLanguageVersion.of(8))
-        buildScan.value(identityPath.path + "#jvmVersion", spec.languageVersion.get().asInt() as String)
-    } as Provider<? extends JavaCompiler>)
 }
 
 tasks.withType(Test).configureEach {
@@ -47,7 +46,7 @@ tasks.withType(Test).configureEach {
     systemProperty 'testContext.gradleVersion', testGradleVersion
     buildScan.value(identityPath.path + "#gradleVersion", testGradleVersion)
 
-    def incompatibleJavaVsGradleVersions = parseInt(testJavaRuntimeVersion) >= 16 && parseInt(testGradleVersion.substring(0, testGradleVersion.indexOf('.'))) < 7
+    def incompatibleJavaVsGradleVersions = parseInt(testJavaRuntimeVersion) > 16 && GradleVersion.version(testGradleVersion) < GradleVersion.version('7.3')
     if (incompatibleJavaVsGradleVersions) {
         enabled = false
     }
