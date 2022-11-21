@@ -10,7 +10,7 @@ plugins {
 }
 
 group = 'nu.studer'
-version = '3.0.1-DEV'
+version = '4.0.0-DEV'
 
 dependencies {
     implementation 'nu.studer:java-ordered-properties:1.0.4'

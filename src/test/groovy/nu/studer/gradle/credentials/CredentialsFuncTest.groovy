@@ -96,11 +96,11 @@ class CredentialsFuncTest extends BaseFuncTest {
 
         when:
         runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=xyz', '-i')
-        def result = runWithArguments('printValue', '-PcredentialsPassphrase=abz', '-i')
+        def result = runAndFailWithArguments('printValue', '-PcredentialsPassphrase=abz', '-i')
 
         then:
-        result.task(':printValue').outcome == TaskOutcome.SUCCESS
-        result.output.contains('value: null')
+        result.task(':printValue').outcome == TaskOutcome.FAILED
+        result.output.contains('Decryption failed')
     }
 
     void "cannot access credentials used with different passphrase from when added with default passphrase"() {
@@ -109,11 +109,52 @@ class CredentialsFuncTest extends BaseFuncTest {
 
         when:
         runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-i')
-        def result = runWithArguments('printValue', '-PcredentialsPassphrase=abz', '-i')
+        def result = runAndFailWithArguments('printValue', '-PcredentialsPassphrase=abz', '-i')
+
+        then:
+        result.task(':printValue').outcome == TaskOutcome.FAILED
+        result.output.contains('Decryption failed')
+    }
+
+    void "can configure custom name of credentials file"() {
+        given:
+        buildFile()
+
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsFile=my.encrypted.properties', '-i')
+        def result = runWithArguments('printValue', '-PcredentialsFile=my.encrypted.properties', '-i')
 
         then:
         result.task(':printValue').outcome == TaskOutcome.SUCCESS
-        result.output.contains('value: null')
+        result.output.contains('value: someValue')
+    }
+
+    void "can configure custom name of credentials file and provide passphrase"() {
+        given:
+        buildFile()
+
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=abc',
+                         '-PcredentialsFile=my.encrypted.properties', '-i')
+        def result = runWithArguments('printValue', '-PcredentialsPassphrase=abc', '-PcredentialsFile=my.encrypted.properties', '-i')
+
+        then:
+        result.task(':printValue').outcome == TaskOutcome.SUCCESS
+        result.output.contains('value: someValue')
+    }
+
+    void "cannot access credentials when providing different passphrase and using custom name of credentials file"() {
+        given:
+        buildFile()
+
+        when:
+        runWithArguments('addCredentials', '--key', 'someKey', '--value', 'someValue', '-PcredentialsPassphrase=abc',
+                         '-PcredentialsFile=my.encrypted.properties', '-i')
+        def result = runAndFailWithArguments('printValue', '-PcredentialsPassphrase=xyz', '-PcredentialsFile=my.encrypted.properties', '-i')
+
+        then:
+        result.task(':printValue').outcome == TaskOutcome.FAILED
+        result.output.contains('Decryption failed')
     }
 
     void "can configure custom location of password file"() {

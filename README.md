@@ -91,15 +91,21 @@ credentials are stored in the _GRADLE_USER_HOME/gradle.encrypted.properties_.
 
     gradle addCredentials --key someKey --value someValue
 
-Optionally, pass along a custom passphrase through the `credentialsPassphrase` project property. The
-credentials are stored in the passphrase-specific _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the
-_MD5HASH_ is calculated from the specified passphrase.
+Optionally, pass along a custom passphrase through the `credentialsPassphrase` project property.
+Passing a passphrase is recommended and might be required in future releases of the credentials plugin.
 
     gradle addCredentials --key someKey --value someValue -PcredentialsPassphrase=mySecretPassPhrase
 
 Optionally, pass along a custom directory location of the credentials file through the `credentialsLocation` project property.
 
     gradle addCredentials --key someKey --value someValue -PcredentialsLocation=/some/directory
+
+Optionally, specify the file name of the credentials file through the `credentialsFile` project property.
+
+    gradle addCredentials --key someKey --value someValue -PcredentialsFile=my.encrypted.properties
+
+Specifying a custom `credentialsFile` project property can be useful to encrypt credentials for different projects with
+different passphrases.
 
 ### Remove encrypted credentials
 
@@ -109,15 +115,13 @@ _GRADLE_USER_HOME/gradle.encrypted.properties_.
 
     gradle removeCredentials --key someKey
 
-Optionally, pass along a custom passphrase through the `credentialsPassphrase` project property. The
-credentials are removed from the passphrase-specific _GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the
-_MD5HASH_ is calculated from the specified passphrase.
-
-    gradle removeCredentials --key someKey -PcredentialsPassphrase=mySecretPassPhrase
-
 Optionally, pass along a custom directory location of the credentials file through the `credentialsLocation` project property.
 
     gradle removeCredentials --key someKey -PcredentialsLocation=/some/directory
+
+Optionally, specify the file name of the credentials file through the `credentialsFile` project property.
+
+    gradle addCredentials --key someKey --value someValue -PcredentialsFile=my.encrypted.properties
 
 ## Access credentials in build
 
@@ -130,14 +134,11 @@ credentials are decrypted as they are accessed.
 String accountPassword = credentials.forKey('someAccountPassword')
 ```
 
-If no explicit passphrase is passed when starting the build, the `credentials` container is initialized with all credentials persisted in the _
-GRADLE_USER_HOME/gradle.encrypted.properties_.
-
-If a custom passphrase is passed through the `credentialsPassphrase` project property when starting the build, the `credentials` container is initialized with all credentials
-persisted in the passphrase-specific
-_GRADLE_USER_HOME/gradle.MD5HASH.encrypted.properties_ where the _MD5HASH_ is calculated from the specified passphrase.
+Per default, the `credentials` container is initialized with all credentials persisted in the _GRADLE_USER_HOME/gradle.encrypted.properties_.
 
 If a custom directory location is passed through the `credentialsLocation` project property when starting the build, the credentials file will be seeked in that directory.
+
+A custom credentials file name can be specified via the `credentialsFile` project property.
 
 # Compatibility
 
@@ -149,6 +150,17 @@ If a custom directory location is passed through the `credentialsLocation` proje
 See the [Migration](#migration) section on how to migrate your build from older to newer credentials plugin versions.
 
 # Migration
+
+## Migrating from credentials plugin 3.x to 4.x
+
+When specifying a passphrase the file name of the encrypted properties no longer contains the MD5 digest of the passphrase.
+Previously, the file name was `gradle.MD5HASH.encrypted.properties`. Since version 4.0 the default file name `gradle.encrypted.properties`
+is used, unless a custom file name is specified via the `credentialsFile` project property.
+
+Please rename the file from the name containing the MD5 digest to the default filename `gradle.encrypted.properties` or specify the
+file name via the `credentialsFile` project property.
+
+Removing the MD5 digest from the file name and updating the passphrase and credentials is recommend.
 
 ## Migrating from credentials plugin 2.x to 3.x
 

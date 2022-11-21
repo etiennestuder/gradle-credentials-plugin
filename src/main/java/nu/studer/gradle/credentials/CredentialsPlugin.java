@@ -3,7 +3,6 @@ package nu.studer.gradle.credentials;
 import nu.studer.gradle.credentials.domain.CredentialsContainer;
 import nu.studer.gradle.credentials.domain.CredentialsEncryptor;
 import nu.studer.gradle.credentials.domain.CredentialsPersistenceManager;
-import nu.studer.gradle.util.MD5;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -21,9 +20,8 @@ import java.io.File;
 import java.util.function.Function;
 
 /**
- * Plugin to store and access encrypted credentials using password-based encryption (PBE). The credentials are stored in the Gradle home directory in a separate file for each
- * passphrase. If no passphrase is provided, a default passphrase is used and the credentials are stored in the default credentials file 'gradle.encrypted.properties'. While
- * running a build, only one passphrase is active per project.
+ * Plugin to store and access encrypted credentials using password-based encryption (PBE). The credentials are stored in the Gradle home directory.
+ * The filename of the credentials file can be configured via the 'credentialsFile' property. The default credentials file name is 'gradle.encrypted.properties'.
  * <p>
  * The plugin provides a credentials container through the 'credentials' property that is available from the Gradle project. This allows access to credentials in the form of
  * <code>project.myCredentialKey</code>. The already persisted credentials can be accessed through the credentials container, and new credentials can be added to the container
@@ -33,12 +31,13 @@ import java.util.function.Function;
  */
 public class CredentialsPlugin implements Plugin<ExtensionAware> {
 
-    public static final String DEFAULT_PASSPHRASE_CREDENTIALS_FILE = "gradle.encrypted.properties";
+    public static final String DEFAULT_CREDENTIALS_FILE = "gradle.encrypted.properties";
     public static final String DEFAULT_PASSPHRASE = ">>Default passphrase to encrypt passwords!<<";
 
     public static final String CREDENTIALS_CONTAINER_PROPERTY = "credentials";
 
     public static final String CREDENTIALS_LOCATION_PROPERTY = "credentialsLocation";
+    public static final String CREDENTIALS_FILE_PROPERTY = "credentialsFile";
     public static final String CREDENTIALS_PASSPHRASE_PROPERTY = "credentialsPassphrase";
     public static final String CREDENTIALS_KEY_PROPERTY = "credentialsKey";
     public static final String CREDENTIALS_VALUE_PROPERTY = "credentialsValue";
@@ -77,8 +76,8 @@ public class CredentialsPlugin implements Plugin<ExtensionAware> {
         // get the passphrase from the project properties, otherwise use the default passphrase
         String passphrase = getStringProperty(CREDENTIALS_PASSPHRASE_PROPERTY, DEFAULT_PASSPHRASE, extensionAware);
 
-        // derive the name of the credentials file from the passphrase
-        String credentialsFileName = deriveFileNameFromPassphrase(passphrase);
+        // get the credentials file name from the project properties, otherwise use the default file name
+        String credentialsFileName = getStringProperty(CREDENTIALS_FILE_PROPERTY, DEFAULT_CREDENTIALS_FILE, extensionAware);
 
         // create credentials encryptor for the given passphrase
         CredentialsEncryptor credentialsEncryptor = CredentialsEncryptor.withPassphrase(passphrase.toCharArray());
@@ -119,19 +118,6 @@ public class CredentialsPlugin implements Plugin<ExtensionAware> {
         // add a task instance that removes some credentials through the credentials persistence manager
         TaskProvider<RemoveCredentialsTask> removeCredentialsProvider = tasks.register(REMOVE_CREDENTIALS_TASK_NAME, RemoveCredentialsTask.class, credentialsPersistenceManager);
         LOGGER.debug(String.format("Registered task '%s'", removeCredentialsProvider.getName()));
-    }
-
-    private String deriveFileNameFromPassphrase(String passphrase) {
-        // derive the name of the file that contains the credentials from the given passphrase
-        String credentialsFileName;
-        if (passphrase.equals(DEFAULT_PASSPHRASE)) {
-            credentialsFileName = DEFAULT_PASSPHRASE_CREDENTIALS_FILE;
-            LOGGER.debug("No explicit passphrase provided. Using default credentials file name: " + credentialsFileName);
-        } else {
-            credentialsFileName = "gradle." + MD5.generateMD5Hash(passphrase) + ".encrypted.properties";
-            LOGGER.debug("Custom passphrase provided. Using credentials file name: " + credentialsFileName);
-        }
-        return credentialsFileName;
     }
 
     private static final class Pair {
