@@ -54,18 +54,15 @@ tasks.withType(Test).configureEach {
 }
 
 gradlePlugin {
+    website = 'https://github.com/etiennestuder/gradle-credentials-plugin'
+    vcsUrl = 'https://github.com/etiennestuder/gradle-credentials-plugin'
     plugins {
         pluginDevPlugin {
             id = 'nu.studer.credentials'
             displayName = 'gradle-credentials-plugin'
             description = 'Gradle plugin to store and access encrypted credentials for use in Gradle builds.'
+            tags.set(['credentials'])
             implementationClass = 'nu.studer.gradle.credentials.CredentialsPlugin'
         }
     }
-}
-
-pluginBundle {
-    website = 'https://github.com/etiennestuder/gradle-credentials-plugin'
-    vcsUrl = 'https://github.com/etiennestuder/gradle-credentials-plugin'
-    tags = ['credentials']
 }
