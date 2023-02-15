@@ -22,9 +22,9 @@ dependencies {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
+        vendor = JvmVendorSpec.BELLSOFT
     }
 }
-
 tasks.withType(AbstractCompile).configureEach {
     options.compilerArgs <<
         "-Werror" <<
