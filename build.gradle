@@ -14,7 +14,7 @@ version = '3.0.1-DEV'
 
 dependencies {
     implementation 'nu.studer:java-ordered-properties:1.0.4'
-    implementation 'commons-codec:commons-codec:1.15'
+    implementation 'commons-codec:commons-codec:1.16.0'
 
     testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
 }
