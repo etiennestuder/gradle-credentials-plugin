@@ -11,16 +11,16 @@ updates:
         registries:
             - gradle-plugin-portal
         schedule:
-            interval: "daily"
+            interval: "monthly"
     -   package-ecosystem: "gradle"
         directory: "/example/settings_application"
         registries:
             - gradle-plugin-portal
         schedule:
-            interval: "daily"
+            interval: "monthly"
     -   package-ecosystem: "gradle"
         directory: "/example/project_application"
         registries:
             - gradle-plugin-portal
         schedule:
-            interval: "daily"
+            interval: "monthly"
