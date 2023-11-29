@@ -3,7 +3,7 @@ import org.gradle.util.GradleVersion
 import static java.lang.Integer.parseInt
 
 plugins {
-    id 'nu.studer.plugindev' version '4.1'
+    id 'java-gradle-plugin'
     id 'com.gradle.plugin-publish' version '1.2.1'
     id 'org.nosphere.gradle.github.actions' version '1.4.0'
     id 'groovy'
@@ -11,6 +11,10 @@ plugins {
 
 group = 'nu.studer'
 version = '3.0.1-DEV'
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     implementation 'nu.studer:java-ordered-properties:1.0.4'
@@ -53,6 +57,10 @@ tasks.withType(Test).configureEach {
     }
 }
 
+tasks.withType(Javadoc).configureEach {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
 gradlePlugin {
     website = 'https://github.com/etiennestuder/gradle-credentials-plugin'
     vcsUrl = 'https://github.com/etiennestuder/gradle-credentials-plugin'
@@ -65,4 +73,9 @@ gradlePlugin {
             implementationClass = 'nu.studer.gradle.credentials.CredentialsPlugin'
         }
     }
+}
+
+tasks.withType(ValidatePlugins.class).configureEach {
+    failOnWarning = true
+    enableStricterValidation = true
 }
